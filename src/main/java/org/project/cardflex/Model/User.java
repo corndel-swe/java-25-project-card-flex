@@ -1,4 +1,4 @@
-package org.project.cardflex;
+package org.project.cardflex.Model;
 
 public class User {
     private int id;

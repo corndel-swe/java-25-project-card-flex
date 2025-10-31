@@ -10,17 +10,17 @@ USERSCARDS |{ --|{USER: userId
 
 
 USER {
-string id PK
+integer id PK
 string username UK
 float totalBalance
 }
 USERSCARDS {
-    string userId FK
-    string cardId FK
+    integer userId FK
+    integer cardId FK
 }
 CARDS {
-string id PK
-string userId FK
+integer id PK
+integer userId FK
 integer accountNumber UK
 float creditLimit
 float balance
@@ -30,18 +30,18 @@ string refreshDate
 string cardName
 }
 TRANSACTIONS {
-string id PK
+integer id PK
 integer sendersAccountNumber FK
-string sendersCardId FK
+integer sendersCardId FK
 string recepientUsername
-string receipientAccountNumber
+integer receipientAccountNumber
 string sendersUsername
 float amount
 string description
 string transactionDate
 }
 CARDTRANSACTIONS {
-    string cardId FK
-    string transactionId FK
+    integer cardId FK
+    integer transactionId FK
 }
 ```
