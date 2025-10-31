@@ -33,8 +33,8 @@ TRANSACTIONS {
 integer id PK
 integer sendersAccountNumber FK
 integer sendersCardId FK
-string recepientUsername
-integer receipientAccountNumber
+string recipientUsername
+integer recipientAccountNumber
 string sendersUsername
 float amount
 string description

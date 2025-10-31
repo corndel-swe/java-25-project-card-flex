@@ -1,5 +1,5 @@
 package org.project.cardflex.Model;
-
+// FY
 public class Cards {
     private int id;
     private int userId;
@@ -10,7 +10,7 @@ public class Cards {
     private String refreshDate;
     private String cardName;
 
-    // ------Constructors for cards
+    // --------------- Constructors for cards -------------- //
     public Cards(int id, int userId, int accountNumber, float creditLimit, float APR, String startDate, String refreshDate, String cardName) {
         this.id = id;
         this.userId = userId;
@@ -29,7 +29,7 @@ public class Cards {
         this.cardName = cardName;
         this.refreshDate = refreshDate;
     }
-
+    // ------------- Getters And Setters ------------------- //
     public Cards(int userId) {
         this.userId = userId;
     }
