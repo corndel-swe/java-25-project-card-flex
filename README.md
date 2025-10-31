@@ -1,6 +1,6 @@
 # Card Flex
 
-```
+```mermaid
 
 erDiagram
 CARDTRANSACTIONS |{ --|{CARDS: cardId
