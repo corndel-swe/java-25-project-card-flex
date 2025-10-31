@@ -26,6 +26,7 @@ float balance
 float APR
 string startDate
 string refreshDate
+string cardName
 }
 TRANSACTIONS {
 string id PK
