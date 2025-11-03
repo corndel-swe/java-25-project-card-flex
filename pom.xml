@@ -79,7 +79,7 @@
                 <artifactId>flyway-maven-plugin</artifactId>
                 <version>10.15.2</version>
                 <configuration>
-                    <url>jdbc:sqlite:NEEDS-TO-BE-SET</url>
+                    <url>jdbc:sqlite:card-flex.db</url>
                 </configuration>
                 <dependencies>
                     <dependency>
