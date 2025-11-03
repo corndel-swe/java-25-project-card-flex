@@ -33,6 +33,9 @@ public class User {
     public float getTotalBalance() {
         return totalBalance;
     }
+
+
+
 }
 
 
