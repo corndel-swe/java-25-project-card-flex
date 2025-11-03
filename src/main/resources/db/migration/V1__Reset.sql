@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS cards(
     credit_limit FLOAT,
     balance FLOAT,
     apr FLOAT,
-    start_date INTEGER NOT NULL,
+    start_date TEXT TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     refresh_date INTEGER NOT NULL,
     card_name TEXT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE

@@ -8,16 +8,16 @@ INSERT INTO users (id, username, total_balance) VALUES
 
 --insert example data into cards table
 INSERT INTO cards (id, user_id, account_number, credit_limit, balance, apr, start_date, refresh_date, card_name) VALUES
-(1, 1, 123456, 200.00, 500.00, 10.7, 10, 1, 'Gold'),
-(2, 2, 246890, 1000.00, 2000.00, 15.1, 10, 1, 'Platinum'),
-(3, 3, 369124, 2500.00, 3000.00, 18.0, 10, 1, 'Diamond');
+(1, 1, 123456, 200.00, 500.00, 10.7, '10-02-2025', 1, 'GOLD'),
+(2, 2, 246890, 1000.00, 2000.00, 15.1, '14-07-2025', 1, 'PLATINUM'),
+(3, 3, 369124, 2500.00, 3000.00, 18.0, '25-06-2025', 1, 'BLACK');
 
 --insert example data into transactions table
 INSERT INTO transactions (id, senders_account_number, senders_username, senders_card_id, recipient_username,
 recipient_account_number, amount, description, transaction_date) VALUES
-(1, 135790, 'TrustFundBaby', 1, 'ScroogeMcHuman', 2, 380.99, 'Money for Scrooge', 1810),
-(2, 098789, 'MashFetchum', 5, 'FrugalNotCheap', 998877, 60.00, 'Buying a Greatball', 1709 ),
-(3, 300355, 'RonaldStump', 4, 'TrustFundBaby', 135790, 1000.67, 'Small donation', 0707);
+(1, 135790, 'TrustFundBaby', 1, 'ScroogeMcHuman', 2, 380.99, 'Money for Scrooge', '18-06-2025'),
+(2, 098789, 'MashFetchum', 5, 'FrugalNotCheap', 998877, 60.00, 'Buying a Greatball', '17-08-2025'),
+(3, 300355, 'RonaldStump', 4, 'TrustFundBaby', 135790, 1000.67, 'Small donation', '07-07-2025');
 
 --insert example data into users_cards
 INSERT INTO users_cards (user_id, card_id) VALUES
