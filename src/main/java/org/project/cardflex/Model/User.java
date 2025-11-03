@@ -41,7 +41,8 @@ public class User {
     public void updateTotalBalance() throws SQLException {
         UserRepository.updateTotalBalance(username);
     }//will call updateTotalBalance, which sources from table, and updates class
-}
+    }
+
 
 
 

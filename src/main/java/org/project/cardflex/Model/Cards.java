@@ -29,6 +29,16 @@ public class Cards {
         this.cardName = cardName;
         this.refreshDate = refreshDate;
     }
+
+    public Cards(int userId, int accountNumber, float creditLimit, float APR, String cardName, String startDate, String refreshDate) {
+        this.userId = userId;
+        this.accountNumber = accountNumber;
+        this.creditLimit = creditLimit;
+        this.APR = APR;
+        this.cardName = cardName;
+        this.startDate = startDate;
+        this.refreshDate = refreshDate;
+    }
     // ------------- Getters And Setters ------------------- //
     public Cards(int userId) {
         this.userId = userId;
@@ -90,3 +100,5 @@ public class Cards {
         this.userId = userId;
     }
 }
+
+
