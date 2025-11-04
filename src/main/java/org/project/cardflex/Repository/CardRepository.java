@@ -29,7 +29,7 @@ public class CardRepository {
                      APR = 18.00F;
                      creditLimit = 25000;}
 
-                int accountNumber =  r.nextInt(10000);
+                int accountNumber =  r.nextInt(10000,99999);
                 stmt.setInt(1, accountNumber); // Check to see if it's unique
                 stmt.setFloat(2, creditLimit);
                 stmt.setFloat(3, APR);
