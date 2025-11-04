@@ -1,5 +1,6 @@
 package org.project.cardflex.Repository;
 
+import org.project.cardflex.DB;
 import org.project.cardflex.Model.Cards;
 
 import javax.smartcardio.Card;
@@ -8,12 +9,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import org.project.cardflex.DB;
+import java.sql.PreparedStatement;
 
 public class CardRepository {
 
 //   Display Credit Card Type to Users
     public static Cards newCreditCard (int userId, String cardName) throws SQLException {
-        var query = "INSERT INTO Cards (userId, accountNumber, creditLimit, APR, startDate, refreshDate, cardName), VALUES (? ? ? ? ? ?)";
+        var query = "INSERT INTO Cards (accountNumber, creditLimit, APR, refreshDate, cardName, balance), VALUES (? ? ? ? ? ?)";
         try (var con = DB.getConnection();
              var stmt = con.prepareStatement(query))
              {
@@ -21,32 +24,33 @@ public class CardRepository {
                  float APR = 0;
                  int creditLimit = 0;
                  if (Boolean.parseBoolean(cardName ="Gold".toLowerCase())){
-                 APR = 10.00F;
+                 APR = 10.70F;
                  creditLimit = 5000;}
              else if (Boolean.parseBoolean(cardName = "Platinum".toLowerCase())) {
-                 APR = 25.00F;
+                 APR = 15.10F;
                  creditLimit = 15000;}
 
              else {
-                     APR = 40.00F;
+                     APR = 18.00F;
                      creditLimit = 25000;}
 
-
-                int accountNumber =   stmt.setInt(1, r.nextInt(10000)); // Check to see if it's unique
-                stmt.setFloat(3, creditLimit);
-                stmt.setFloat(4, APR);
-                var startDate = stmt.setString(5, "startDate");
-                var refreshDate = stmt.setString(6, "refreshDate");
-
+                int accountNumber =  r.nextInt(10000);
+                stmt.setInt(1, accountNumber); // Check to see if it's unique
+                stmt.setFloat(2, creditLimit);
+                stmt.setFloat(3, APR);
+                stmt.setString(4, "1");
+                stmt.setString(5, cardName);
+                stmt.setInt(6, 0);
                 try (var rs = stmt.executeQuery();) {
-                   startDate =  rs.getstring("startDate");
-                   refreshDate = rs.getString("refreshDate");
+                    var accountNum = rs.getInt(3);
+                    var creditLim = rs.getInt(4);
+                    var balance = rs.getInt(5);
+                    var apr = rs.getFloat(6);
+                    var startDate = rs.getString(7);
+                    return new Cards(accountNum, creditLim, apr, cardName, startDate, balance);
                 }
 
-                return new Cards(userId, accountNumber, creditLimit, APR, startDate, refreshDate, cardName); // METHOD OVERLOADING REQUIRED
              }
-
-
         }
     // Locating Exisiting Cards Based off User ID
     public static List<Cards> findCardsByUserID () throws SQLException {
@@ -57,21 +61,21 @@ public class CardRepository {
 
             var cards = new ArrayList<Cards>();
             while (rs.next()) {
-                var id = rs.getInt ("id");
+                var id = rs.getInt("id");
                 var userId = rs.getInt("userId");
-                var accountNumber= rs.getInt("accountNumber");
-                var creditLimit = rs.getfloat("creditLimit");
-                var APR = rs.getfloat("APR");
-                var startDate = rs.getstring("startDate");
+                var accountNumber = rs.getInt("accountNumber");
+                var creditLimit = rs.getFloat("creditLimit");
+                var APR = rs.getFloat("APR");
+                var startDate = rs.getString("startDate");
                 var refreshDate = rs.getString("refreshDate");
-                var cardName = rs.getString("cardName"); }
+                var cardName = rs.getString("cardName");
 
 
-            cards.add(new Cards(id,userID,accountNumber, creditLimit, APR, startDate, refreshDate, cardName));
+                cards.add(new Cards(id, userId, accountNumber, creditLimit, APR, startDate, refreshDate, cardName));
+            }
+            return cards;
+
         }
-        return cards;
-
-
 
     }
 }
