@@ -8,9 +8,9 @@ INSERT INTO users (id, username, total_balance) VALUES
 
 --insert example data into cards table
 INSERT INTO cards (id, user_id, account_number, credit_limit, balance, apr, start_date, refresh_date, card_name) VALUES
-(1, 1, 123456, 200.00, 500.00, 10.7, '10-02-2025', 1, 'GOLD'),
-(2, 2, 246890, 1000.00, 2000.00, 15.1, '14-07-2025', 1, 'PLATINUM'),
-(3, 3, 369124, 2500.00, 3000.00, 18.0, '25-06-2025', 1, 'BLACK');
+(1, 1, 123456, 5000.00, 5000.00, 10.7, '10-02-2025', 1, 'GOLD'),
+(2, 2, 246890, 15000.00, 15000.00, 15.1, '14-07-2025', 1, 'PLATINUM'),
+(3, 3, 369124, 25000.00, 25000.00, 18.0, '25-06-2025', 1, 'BLACK');
 
 --insert example data into transactions table
 INSERT INTO transactions (id, senders_account_number, senders_username, senders_card_id, recipient_username,

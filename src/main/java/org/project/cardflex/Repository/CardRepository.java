@@ -29,7 +29,7 @@ public class CardRepository {
 
              else {
                      APR = 40.00F;
-                     creditLimit = 2500;}
+                     creditLimit = 25000;}
 
 
                 int accountNumber =   stmt.setInt(1, r.nextInt(10000)); // Check to see if it's unique
@@ -70,7 +70,7 @@ public class CardRepository {
             cards.add(new Cards(id,userID,accountNumber, creditLimit, APR, startDate, refreshDate, cardName));
         }
         return cards;
-        //TEST
+
 
 
     }
