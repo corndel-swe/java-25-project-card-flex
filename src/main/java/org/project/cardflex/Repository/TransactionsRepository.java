@@ -1,5 +1,6 @@
 package org.project.cardflex.Repository;
 
+import org.project.cardflex.DB;
 import org.project.cardflex.Model.Transactions;
 
 import java.sql.Connection;
@@ -11,7 +12,7 @@ import java.util.List;
 
 public class TransactionsRepository {
     public static List<Transactions> findById (int id) throws SQLException {
-        var query = "SELECT * FROM TRANSACTIONS WHERE cardId = ? ORDER BY transactionDate DESC";
+        var query = "SELECT * FROM transactions INNER JOIN cards_transactions ON transactions.id = cards_transactions.transactions_id INNER JOIN cards on cards.id = cards_transactions.card_id WHERE card_id = ? ORDER BY transaction_date DESC";
         try (Connection con = DB.getConnection();
              PreparedStatement preparedStatement = con.prepareStatement(query)) {
 
