@@ -2,15 +2,10 @@ package org.project.cardflex.Repository;
 
 import org.project.cardflex.DB;
 import org.project.cardflex.Model.Cards;
-
-import javax.smartcardio.Card;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import org.project.cardflex.DB;
-import java.sql.PreparedStatement;
 
 public class CardRepository {
 
@@ -52,7 +47,7 @@ public class CardRepository {
 
              }
         }
-    // Locating Exisiting Cards Based off User ID
+    // Locating Existing Cards Based off User ID
     public static List<Cards> findCardsByUserID () throws SQLException {
         var query = "SELECT * FROM Cards WHERE userID = ?";
         try (var con = DB.getConnection();
