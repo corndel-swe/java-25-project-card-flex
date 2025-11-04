@@ -9,6 +9,7 @@ public class Cards {
     private String startDate;
     private String refreshDate;
     private String cardName;
+    private int balance;
 
     // --------------- Constructors for cards -------------- //
     public Cards(int id, int userId, int accountNumber, float creditLimit, float APR, String startDate, String refreshDate, String cardName) {
@@ -22,11 +23,22 @@ public class Cards {
         this.cardName = cardName;
     }
 
-    public Cards(int accountNumber, float creditLimit, float APR, String cardName, String refreshDate) {
+    public Cards(int accountNumber, float creditLimit, float APR, String cardName, String startDate, int balance) {
         this.accountNumber = accountNumber;
         this.creditLimit = creditLimit;
         this.APR = APR;
         this.cardName = cardName;
+        this.startDate = startDate;
+        this.balance = balance;
+    }
+
+    public Cards(int userId, int accountNumber, float creditLimit, float APR, String cardName, String startDate, String refreshDate) {
+        this.userId = userId;
+        this.accountNumber = accountNumber;
+        this.creditLimit = creditLimit;
+        this.APR = APR;
+        this.cardName = cardName;
+        this.startDate = startDate;
         this.refreshDate = refreshDate;
     }
 
@@ -98,6 +110,14 @@ public class Cards {
 
     public void setUserId(int userId) {
         this.userId = userId;
+    }
+
+    public int getBalance() {
+        return balance;
+    }
+
+    public void setBalance(int balance) {
+        this.balance = balance;
     }
 }
 

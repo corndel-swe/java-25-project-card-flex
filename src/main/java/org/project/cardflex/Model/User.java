@@ -1,5 +1,9 @@
 package org.project.cardflex.Model;
 
+import org.project.cardflex.Repository.UserRepository;
+
+import java.sql.SQLException;
+
 public class User {
     private int id;
     private String username;
@@ -28,15 +32,17 @@ public class User {
 
     public void setTotalBalance(float totalBalance) {
         this.totalBalance = totalBalance;
-    }
+    } //used for low chance we need to override someones balance
 
     public float getTotalBalance() {
         return totalBalance;
+    } //will get the totalbalance according to the class
+
+    public void updateTotalBalance() throws SQLException {
+        UserRepository.updateTotalBalance(username);
+    }//will call updateTotalBalance, which sources from table, and updates class
     }
 
-
-
-}
 
 
 
