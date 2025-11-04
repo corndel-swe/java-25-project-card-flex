@@ -32,7 +32,7 @@ public class Cards {
         this.balance = balance;
     }
 
-    public Cards(int userId, int accountNumber, float creditLimit, float APR, String cardName, String startDate, String refreshDate) {
+    public Cards(int userId, int accountNumber, float creditLimit, float APR, String cardName, String startDate, String refreshDate, int balance) {
         this.userId = userId;
         this.accountNumber = accountNumber;
         this.creditLimit = creditLimit;
@@ -40,6 +40,7 @@ public class Cards {
         this.cardName = cardName;
         this.startDate = startDate;
         this.refreshDate = refreshDate;
+        this.balance = balance;
     }
     // ------------- Getters And Setters ------------------- //
     public Cards(int userId) {
