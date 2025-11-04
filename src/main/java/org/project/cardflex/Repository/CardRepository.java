@@ -74,6 +74,65 @@ public class CardRepository {
 //Test
 
     }
+
+
+
+    public static Float viewCardBalance (int id) throws  SQLException{
+
+        var query = "SELECT balance FROM cards WHERE id = ?";
+        try (var con = DB.getConnection();
+            var stmt = con.prepareStatement(query)){
+
+            stmt.setInt(1,id);
+
+            try (var rs = stmt.executeQuery();){
+                var balance = rs.getFloat("balance"); //5 index
+
+                return balance;
+            }
+        }
+
+    }
+
+    public static Float viewAPR(int id) throws SQLException{
+        var query = "SELECT apr FROM cards WHERE id = ?";
+        try (var con = DB.getConnection();
+             var stmt = con.prepareStatement(query)){
+
+            stmt.setInt(1,id);
+
+            try (var rs = stmt.executeQuery();){
+                var apr = rs.getFloat("apr"); //5 index
+
+                return apr;
+            }
+        }
+    }
+
+    public static void applyAPR (int id) throws SQLException{
+
+        float balance = viewCardBalance(id); //balance
+        float apr = viewAPR(id); //apr
+
+        //apr 20
+        //apr to apply 0.2 + 1
+        //apr // 100 + 1
+
+        float aprToUse = apr / 100 + 1;
+
+        balance = balance + aprToUse;
+        //decided to store/log in transactions from an admin user
+
+    }
+
+
+
+
+    public static void main(String[] args) throws SQLException {
+        System.out.println(viewCardBalance(1));
+        System.out.println(20.00 / 100.00 + 1 );
+    }
+
 }
 
 
