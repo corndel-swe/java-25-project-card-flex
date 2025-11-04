@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public class UserRepository {
 
-    // This method will check the User exists in the database, therefore returning a User to login
+    // This method will check the User exists in the database, therefore returning a User to login //
     public static User checkUsername(String username) throws SQLException {
         var query = "SELECT * FROM users WHERE username = ? ";
 
