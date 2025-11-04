@@ -14,8 +14,6 @@ public class CardRepository {
 //   Display Credit Card Type to Users
     public static Cards newCreditCard (int userId, String cardName) throws SQLException {
         var query = "INSERT INTO Cards (userId, accountNumber, creditLimit, APR, startDate, refreshDate, cardName), VALUES (? ? ? ? ? ?)";
-        var startDate = "";
-        var refreshDate = "";
         try (var con = DB.getConnection();
              var stmt = con.prepareStatement(query))
              {
