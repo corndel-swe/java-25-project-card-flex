@@ -76,10 +76,18 @@ public class App {
             var transactions = TransactionsRepository.findById(id);
         });
 
-        app.get("/", ctx -> {
+        app.get("/cards", ctx -> {
             ctx.render("/cards.html", Map.of("cards", creditCards));
 
         });
+
+       app.get("/", ctx -> {
+        ctx.render("/login.html");
+       }); 
+
+       app.get("/register", ctx -> {
+        ctx.render("/register.html");
+       });
     }
 
 
