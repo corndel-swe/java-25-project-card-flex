@@ -91,23 +91,17 @@ public class CardRepository {
 
     // create method to delete card
 
-    public static void deleteCard(int id, int userId) throws SQLException {
+    public static void deleteCard(int cardId) throws SQLException {
 
-        var deleteQuery = "DELETE id FROM cards WHERE id = ?  AND balance = 0";
+        var deleteQuery = "DELETE FROM cards WHERE id = ? AND balance = 0";
 
-        try (
-                var connection = DB.getConnection();
-                var statement = connection.prepareStatement(deleteQuery)
-
-                ) {
-
-            statement.setInt(1, id);
-            statement.setInt(2, userId);
+        try (   var connection = DB.getConnection();
+                var statement = connection.prepareStatement(deleteQuery)) {
+            statement.setInt(1, cardId);
             statement.executeUpdate();
         }
 
     }
 }
-
 
 

@@ -29,17 +29,22 @@ public class App {
             var transactions = TransactionsRepository.findById(id);
         });
 
-        app.get("/users/cards/balance/{balance}",
+        app.post("/cards/{user_id}",
                 ctx -> {
-                    var balance = Integer.parseInt(ctx.pathParam("balance"));
+                    var id = Integer.parseInt(ctx.pathParam("user_id"));
+                    CardRepository.newCreditCard(id, "Platinum");
                     ctx.status(200);
+                    ctx.result("Card added");
                 });
 
-        app.delete("/users/cards/{card_id}",
+
+        app.delete("/cards/{card_id}",
                 ctx -> {
-                    var id = Integer.parseInt(ctx.pathParam("card_id");
-                            CardRepository.deleteCard(id,userId);
-                    )
+                    var id = Integer.parseInt(ctx.pathParam("card_id"));
+                            CardRepository.deleteCard(id);
+                            ctx.status(200);
+                            ctx.result("Card deleted");
+
                 });
     }
 }
