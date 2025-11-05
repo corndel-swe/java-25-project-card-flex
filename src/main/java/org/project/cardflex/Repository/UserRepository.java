@@ -62,7 +62,7 @@ public class UserRepository {
 
 
     //Method will update the users total balance sourced from Users table
-    public static float updateTotalBalance(String username) throws SQLException{
+    public static float findTotalBalance(String username) throws SQLException{
         var query = "SELECT total_balance from users where username = ?";
 
 

@@ -4,7 +4,8 @@ INSERT INTO users (id, username, total_balance) VALUES
 (2, 'ScroogeMcHuman', 2000.25),
 (3, 'FrugalNotCheap', 1500.80),
 (4, 'RonaldStump', 800.97),
-(5, 'MashFetchum', 980.59);
+(5, 'MashFetchum', 980.59),
+(6, 'CardFlex', 0);
 
 --insert example data into cards table
 INSERT INTO cards (id, user_id, account_number, credit_limit, balance, apr, start_date, refresh_date, card_name) VALUES
@@ -12,7 +13,8 @@ INSERT INTO cards (id, user_id, account_number, credit_limit, balance, apr, star
 (2, 2, 098789, 15000.00, 0, 15.1, '14-07-2025', 1, 'PLATINUM'),
 (3, 3, 300355, 25000.00, 0, 18.0, '25-06-2025', 1, 'BLACK'),
 (4, 4, 503935, 15000.00, 0, 15.1, '02-04-2025', 1, 'PLATINUM'),
-(5, 5, 484820, 5000.00, 0, 10.7, '14-04-2024', 1, 'GOLD');
+(5, 5, 484820, 5000.00, 0, 10.7, '14-04-2024', 1, 'GOLD'),
+(6, 6, 999999, 25000.00, 0, 18.0, '05-11-2023',1, 'BLACK');
 
 
 --insert example data into transactions table

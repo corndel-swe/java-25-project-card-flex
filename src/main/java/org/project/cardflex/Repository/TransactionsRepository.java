@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +42,7 @@ public class TransactionsRepository {
         }
     }
     public static void addTransaction (Transactions transaction) throws SQLException {
-        var query = "INSERT INTO transactions (senders_card_id, senders_username, senders_account_number, recipient_username, recipient_account_number, amount, description, transaction_date) VALUES (?,?,?,?,?,?,?,?) ";
+        var query = "INSERT INTO transactions (senders_card_id, senders_username, senders_account_number, recipient_username, recipient_account_number, amount, description, transaction_date)  VALUES (?,?,?,?,?,ROUND(?,2),?,?) ";
         try ( var con = DB.getConnection();
               var stmt = con.prepareStatement(query)){
             stmt.setInt(1, transaction.getSendersCardId());
@@ -49,7 +50,12 @@ public class TransactionsRepository {
             stmt.setInt(3, transaction.getSendersAccNum());
             stmt.setString(4, transaction.getRecipientUsername());
             stmt.setInt(5, transaction.getRecipientAccNum());
-            stmt.setFloat(6, transaction.getAmount());
+
+            DecimalFormat df = new DecimalFormat();
+            df.setMaximumFractionDigits(2);
+            var amount = Float.parseFloat((df.format(transaction.getAmount())));
+
+            stmt.setFloat(6, amount);
             stmt.setString(7, transaction.getDescription());
             stmt.setString(8, transaction.getTransactionDate());
 
@@ -59,6 +65,7 @@ public class TransactionsRepository {
 
     }
 
+    // Test adding Transaction
     public static void main(String[] args) throws SQLException {
         TransactionsRepository.addTransaction(new Transactions(1, 1,"Cardflex",  123456,"user", 125, "Test transaction", "01-01-0000"));
     }

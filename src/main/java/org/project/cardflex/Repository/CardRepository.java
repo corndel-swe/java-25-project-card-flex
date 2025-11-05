@@ -6,6 +6,7 @@ import org.project.cardflex.Model.Transactions;
 
 import java.sql.SQLException;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -91,21 +92,17 @@ public class CardRepository {
 
     }
 
-    public static float updateBalance (float balance, int id) throws SQLException{
-        var query = "UPDATE cards SET balance = ? WHERE id = ?";
+    public static void updateBalance (float balance, int id) throws SQLException{
+        var query = "UPDATE cards SET balance = ROUND(?,2) WHERE id = ?";
 
         try (var con = DB.getConnection();
             var stmt = con.prepareStatement(query);)
         {
             stmt.setFloat(1, balance);
             stmt.setInt(2, id);
+            stmt.executeUpdate();
 
 
-            try (var rs = stmt.executeQuery();){
-                var newBalance = rs.getFloat("balance");
-
-                return newBalance;
-            }
         }
 
     };
@@ -141,9 +138,13 @@ public class CardRepository {
         //apr to apply 0.2 + 1
         //apr // 100 + 1
 
-        float aprToUse = apr / 100 + 1;
+        float aprToUse = apr / 100;
 
         float interest = balance * aprToUse;
+        DecimalFormat df = new DecimalFormat();
+        df.setMaximumFractionDigits(2);
+        interest = Float.parseFloat((df.format(interest)));
+        System.out.println(interest);
 
         // connect to Database and Execute Query
 
@@ -184,7 +185,7 @@ public class CardRepository {
 
                         System.out.println("Got username");
                         System.out.println(RecipientAN + " " + RecipientUserName + " " + interest + " " + "Interest applied"+ " " + currentDate);
-                        transactions = new Transactions(1, 1, "cardFlex", RecipientAN, RecipientUserName, interest, "Interest Applied", currentDate);
+                        transactions = new Transactions(999999, 6, "CardFlex", RecipientAN, RecipientUserName, interest, "Interest Applied", currentDate);
 
 
 
@@ -192,7 +193,7 @@ public class CardRepository {
                     }
 
             TransactionsRepository.addTransaction(transactions);
-            updateBalance((balance + interest), id);
+            updateBalance((interest + balance), id);
     }
 
 
