@@ -1,6 +1,7 @@
 package org.project.cardflex;
 
 import io.javalin.Javalin;
+import org.project.cardflex.Repository.CardRepository;
 import org.project.cardflex.Repository.TransactionsRepository;
 
 import static io.javalin.apibuilder.ApiBuilder.path;
