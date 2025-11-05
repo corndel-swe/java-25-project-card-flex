@@ -11,6 +11,12 @@ public class Cards {
     private String cardName;
     private float balance;
 
+    //abstract for Cards
+
+    public Cards() {
+
+    }
+
     // --------------- Constructors for cards -------------- //
     public Cards(int id, int userId, int accountNumber, float creditLimit, float APR, String startDate, String refreshDate, String cardName) {
         this.id = id;
@@ -42,6 +48,8 @@ public class Cards {
         this.refreshDate = refreshDate;
         this.balance = balance;
     }
+
+
     // ------------- Getters And Setters ------------------- //
     public Cards(int userId) {
         this.userId = userId;

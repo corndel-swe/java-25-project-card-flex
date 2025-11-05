@@ -3,6 +3,7 @@ package org.project.cardflex;
 import io.javalin.Javalin;
 import io.javalin.http.staticfiles.Location;
 import io.javalin.rendering.template.JavalinThymeleaf;
+import org.project.cardflex.Model.Transactions;
 import org.project.cardflex.Repository.CardRepository;
 import org.project.cardflex.Repository.TransactionsRepository;
 import org.thymeleaf.TemplateEngine;
@@ -74,6 +75,7 @@ public class App {
 
         app.get("/{cardId}/summary", ctx -> {
             var id = Integer.parseInt(ctx.pathParam("cardId"));
+            CardRepository.updateBalance(id);
             var transactions = TransactionsRepository.findById(id);
         });
 
