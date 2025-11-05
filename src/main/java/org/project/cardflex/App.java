@@ -15,6 +15,7 @@ public class App {
         return app;
     }
 
+
     public App() {
         app = Javalin.create(config -> {});
 
