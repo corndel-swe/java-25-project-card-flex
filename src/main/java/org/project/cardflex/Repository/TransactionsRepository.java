@@ -40,4 +40,22 @@ public class TransactionsRepository {
 
         }
     }
+    public static void addTransaction (Transactions transaction) throws SQLException {
+        var query = "INSERT INTO transactions (senders_card_id, senders_username, senders_account_number, recipient_username, recipient_account_number, amount, description, transaction_date) VALUES (?,?,?,?,?,?,?,?,?) ";
+        try ( var con = DB.getConnection();
+              var stmt = con.prepareStatement(query)){
+            stmt.setInt(1, transaction.getSendersCardId());
+            stmt.setString(2, transaction.getSendersUsername());
+            stmt.setInt(3, transaction.getSendersAccNum());
+            stmt.setString(4, transaction.getRecipientUsername());
+            stmt.setInt(5, transaction.getRecipientAccNum());
+            stmt.setFloat(6, transaction.getAmount());
+            stmt.setString(7, transaction.getDescription());
+            stmt.setString(8, transaction.getTransactionDate());
+
+            stmt.executeUpdate();
+        }
+
+
+    }
 }

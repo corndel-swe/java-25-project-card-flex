@@ -2,7 +2,12 @@ package org.project.cardflex.Repository;
 
 import org.project.cardflex.DB;
 import org.project.cardflex.Model.Cards;
+import org.project.cardflex.Model.Transactions;
+
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -85,6 +90,26 @@ public class CardRepository {
 
     }
 
+    public static float updateBalance (float balance, int id) throws SQLException{
+        var query = "UPDATE cards SET balance = ? WHERE id = ?";
+
+        try (var con = DB.getConnection();
+            var stmt = con.prepareStatement(query);)
+        {
+            stmt.setFloat(1, balance);
+            stmt.setInt(2, id);
+
+
+            try (var rs = stmt.executeQuery();){
+                var newBalance = rs.getFloat("balance");
+
+                return newBalance;
+            }
+        }
+
+    };
+
+
     public static Float viewAPR(int id) throws SQLException{
         var query = "SELECT apr FROM cards WHERE id = ?";
         try (var con = DB.getConnection();
@@ -105,14 +130,47 @@ public class CardRepository {
         float balance = viewCardBalance(id); //balance
         float apr = viewAPR(id); //apr
 
+        LocalDate date = LocalDate.now();
+        DateFormat format = new SimpleDateFormat("dd:MM:yyyy");
+        var currentDate = format.format(date);
+
+
         //apr 20
         //apr to apply 0.2 + 1
         //apr // 100 + 1
 
         float aprToUse = apr / 100 + 1;
 
-        balance *= aprToUse;
-        //decided to store/log in transactions from an admin user
+        float interest = balance * aprToUse;
+
+        // connect to Database and Execute Query
+
+        var recipientsAccNum = "Select account_number FROM cards WHERE id = "+id;
+        var recipientsUserID = "Select user_id FROM cards WHERE id = "+id;
+        var recipientsUserName = "Select username FROM user WHERE id = "+recipientsUserID;
+        var query = recipientsAccNum + ";" + recipientsUserID + ";" + recipientsUserName;
+
+        try( var con = DB.getConnection();
+            var stmt = con.createStatement();
+            var rs = stmt.executeQuery(query)){
+
+            var RecipientAN = rs.getInt("account_number");
+            var RecipientUserID = rs.getInt("user_id");
+            var RecipientUserName = rs.getString("username");
+
+            Transactions transactions = new Transactions(1,1,"cardFlex", RecipientAN, RecipientUserName, interest,"Interest Applied", currentDate);
+
+            TransactionsRepository.addTransaction(transactions);
+            updateBalance((balance+interest), id);
+        }
+
+
+
+
+
+
+
+
 
     }
 
@@ -120,7 +178,7 @@ public class CardRepository {
 
 
 
-
+// Testing the method
     public static void main(String[] args) throws SQLException {
         System.out.println(viewCardBalance(1));
         System.out.println(20.00 / 100.00 + 1 );
