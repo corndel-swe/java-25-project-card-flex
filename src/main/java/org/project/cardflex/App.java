@@ -3,6 +3,8 @@ package org.project.cardflex;
 import io.javalin.Javalin;
 import org.project.cardflex.Repository.TransactionsRepository;
 
+import java.util.Map;
+
 import static io.javalin.apibuilder.ApiBuilder.path;
 
 public class App {
