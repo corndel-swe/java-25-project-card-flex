@@ -2,6 +2,11 @@ package org.project.cardflex.Repository;
 
 import org.project.cardflex.DB;
 import org.project.cardflex.Model.Cards;
+import org.project.cardflex.Model.Statement;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -68,7 +73,6 @@ public class CardRepository {
     }
 
     // create method to delete card if there's no remaining balance to be paid off on the card
-
     public static void deleteCard(int cardId) throws SQLException {
 
         var deleteQuery = "DELETE FROM cards WHERE id = ? AND balance = 0";
@@ -79,6 +83,42 @@ public class CardRepository {
             statement.executeUpdate();
         }
 
+    }
+
+
+    public static List<Statement> buildCardStatement(int id) throws SQLException {
+
+
+        var query = "SELECT cards.account_number, cards.balance, cards.credit_limit, cards.id FROM cards WHERE cards.id = ?";
+
+        List<Statement> statement = new ArrayList<>();
+
+        try (Connection con = DB.getConnection();
+
+             PreparedStatement preparedStatement = con.prepareStatement(query)) {
+            preparedStatement.setInt(1, id);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                int cardId = (resultSet.getInt("id"));
+                int accountNumber = (resultSet.getInt("account_number"));
+                updateBalance(cardId);
+                float balance = (resultSet.getFloat("balance"));
+                float creditLimit = (resultSet.getFloat("credit_limit"));
+                float remainingBalance = creditLimit - balance;
+                statement.add(new Statement(accountNumber, balance, remainingBalance));
+
+                return statement;
+            }
+        }
+    }
+
+
+
+    public static void updateBalance(int id) throws SQLException{
+        var query = "UPDATE cards SET balance = (SELECT SUM(amount) FROM transactions INNER JOIN cards_transactions ON transactions.id = cards_transactions.transactions_id WHERE cards.id = ?) WHERE cards.id = ?";
+        try (Connection con = DB.getConnection();
+             PreparedStatement preparedStatement = con.prepareStatement(query)) {
+            preparedStatement.setInt(1,id);
+        }
     }
 }
 
