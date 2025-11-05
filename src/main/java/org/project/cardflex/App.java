@@ -1,6 +1,7 @@
 package org.project.cardflex;
 
 import io.javalin.Javalin;
+import org.project.cardflex.Model.Transactions;
 import org.project.cardflex.Repository.CardRepository;
 import org.project.cardflex.Repository.TransactionsRepository;
 
@@ -28,5 +29,12 @@ public class App {
             var id = Integer.parseInt(ctx.pathParam("cardId"));
             var transactions = TransactionsRepository.findById(id);
         });
+
+        app.post("/transactiontest",ctx -> {
+            TransactionsRepository.addTransaction(new Transactions(1, 1,"Cardflex",  123456,"user", 125, "Test transaction", "01-01-0000"));
+
+
+        });
+
     }
 }

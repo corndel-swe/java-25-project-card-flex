@@ -9,6 +9,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -130,9 +131,10 @@ public class CardRepository {
         float balance = viewCardBalance(id); //balance
         float apr = viewAPR(id); //apr
 
-        LocalDate date = LocalDate.now();
-        DateFormat format = new SimpleDateFormat("dd:MM:yyyy");
-        var currentDate = format.format(date);
+        Date date = new Date();
+        SimpleDateFormat formatpattern = new SimpleDateFormat("dd-MM-yyyy");
+        var currentDate = formatpattern.format(date);
+        System.out.println(currentDate);
 
 
         //apr 20
@@ -146,32 +148,51 @@ public class CardRepository {
         // connect to Database and Execute Query
 
         var recipientsAccNum = "Select account_number FROM cards WHERE id = "+id;
-        var recipientsUserID = "Select user_id FROM cards WHERE id = "+id;
-        var recipientsUserName = "Select username FROM user WHERE id = "+recipientsUserID;
-        var query = recipientsAccNum + ";" + recipientsUserID + ";" + recipientsUserName;
 
+
+        //var query = recipientsAccNum + ";" + recipientsUserID + ";" + recipientsUserName;
+        int RecipientAN = 0;
+        int RecipientUserID = 0;
         try( var con = DB.getConnection();
             var stmt = con.createStatement();
-            var rs = stmt.executeQuery(query)){
-
-            var RecipientAN = rs.getInt("account_number");
-            var RecipientUserID = rs.getInt("user_id");
-            var RecipientUserName = rs.getString("username");
-
-            Transactions transactions = new Transactions(1,1,"cardFlex", RecipientAN, RecipientUserName, interest,"Interest Applied", currentDate);
-
-            TransactionsRepository.addTransaction(transactions);
-            updateBalance((balance+interest), id);
+            var rs = stmt.executeQuery(recipientsAccNum)) {
+            System.out.println("Executed query 1");
+            RecipientAN = rs.getInt("account_number");
+            System.out.println("Got acc num");
         }
 
+        var recipientsUserID = "SELECT user_id FROM cards WHERE id = "+id;
+
+            try (var con2 = DB.getConnection();
+                 var stmt2 = con2.createStatement();
+                    var rs2 = stmt2.executeQuery(recipientsUserID)) {
+                System.out.println("Executed query 2");
+
+                RecipientUserID = rs2.getInt("user_id");
+                System.out.println("Got user id");
+
+
+            }
+            var recipientsUserName = "Select username FROM users WHERE id = " + RecipientUserID;
+            Transactions transactions = null;
+            try (
+                    var con3 = DB.getConnection();
+                    var stmt3 = con3.createStatement();
+                    var rs3 = stmt3.executeQuery(recipientsUserName)) {
+                        System.out.println("Executed query 3");
+                        var RecipientUserName = rs3.getString("username");
+
+                        System.out.println("Got username");
+                        System.out.println(RecipientAN + " " + RecipientUserName + " " + interest + " " + "Interest applied"+ " " + currentDate);
+                        transactions = new Transactions(1, 1, "cardFlex", RecipientAN, RecipientUserName, interest, "Interest Applied", currentDate);
 
 
 
 
+                    }
 
-
-
-
+            TransactionsRepository.addTransaction(transactions);
+            updateBalance((balance + interest), id);
     }
 
 
@@ -180,8 +201,11 @@ public class CardRepository {
 
 // Testing the method
     public static void main(String[] args) throws SQLException {
-        System.out.println(viewCardBalance(1));
+        var Cardid = 1;
+        System.out.println(viewCardBalance(Cardid));
         System.out.println(20.00 / 100.00 + 1 );
+        System.out.println(viewAPR(Cardid));
+        applyAPR(Cardid);
     }
 
 }

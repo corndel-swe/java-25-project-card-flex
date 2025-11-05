@@ -41,7 +41,7 @@ public class TransactionsRepository {
         }
     }
     public static void addTransaction (Transactions transaction) throws SQLException {
-        var query = "INSERT INTO transactions (senders_card_id, senders_username, senders_account_number, recipient_username, recipient_account_number, amount, description, transaction_date) VALUES (?,?,?,?,?,?,?,?,?) ";
+        var query = "INSERT INTO transactions (senders_card_id, senders_username, senders_account_number, recipient_username, recipient_account_number, amount, description, transaction_date) VALUES (?,?,?,?,?,?,?,?) ";
         try ( var con = DB.getConnection();
               var stmt = con.prepareStatement(query)){
             stmt.setInt(1, transaction.getSendersCardId());
@@ -57,5 +57,9 @@ public class TransactionsRepository {
         }
 
 
+    }
+
+    public static void main(String[] args) throws SQLException {
+        TransactionsRepository.addTransaction(new Transactions(1, 1,"Cardflex",  123456,"user", 125, "Test transaction", "01-01-0000"));
     }
 }
