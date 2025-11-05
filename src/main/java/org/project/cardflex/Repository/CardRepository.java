@@ -120,10 +120,12 @@ public class CardRepository {
 
         float aprToUse = apr / 100 + 1;
 
-        balance = balance + aprToUse;
+        balance *= aprToUse;
         //decided to store/log in transactions from an admin user
 
     }
+
+
 
 
 
