@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" xlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -14,10 +14,12 @@
 
 <main>
 <p>To use our platform, please type in your userame below:</p>
-<div>
+<form action = "/" method = "post">
     <label for="login">Username</label>
-    <input type="text" id="login">
-</div>
+    <input type="text" name="login" id="login" required>
+
+    <button type="submit">submit</button>
+</form>
 </main>
 
 </body>
