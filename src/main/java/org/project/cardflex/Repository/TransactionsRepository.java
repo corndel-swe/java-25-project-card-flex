@@ -30,7 +30,7 @@ public class TransactionsRepository {
                     String sendersUsername = (resultSet.getString("senders_username"));
                     float amount = (resultSet.getFloat("amount"));
                     String description = (resultSet.getString("description"));
-                    String transactionDate = resultSet.getString("transactionDate");
+                    String transactionDate = resultSet.getString("transaction_date");
 
                     transactions.add(new Transactions(transactionId, sendersAccountNumber, sendersCardId, recipientUsername, recipientAccountNumber, sendersUsername, amount, description, transactionDate));
                 }
