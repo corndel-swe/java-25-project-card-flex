@@ -16,7 +16,17 @@ public class App {
         return app;
     }
 
+
     public App() {
         app = Javalin.create(config -> {});
+
+        // Test for transactions
+////        app.get(
+////                "/transactions/{id}",
+////                ctx -> {
+////                    var id = Integer.parseInt(ctx.pathParam("id"));
+////                    ctx.json(TransactionsRepository.findById(id));
+//                }
+//        );
     }
 }
