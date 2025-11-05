@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cards</title>
+</head>
+
+<body>
+    <section class="heading">
+
+        <h1 style="justify-self: center;">CardFlex Homepage</h1>
+        <button style="align-self: flex-start;">Sign out</button>
+    </section>
+    <section class="container">
+        <div class="balance-row">
+            <div>
+                <h3>Credit Cards</h3>
+                <p>You have X amount of credit cards</p>
+            </div>
+            <div class="balance">
+                Total balance: £xxxx
+            </div>
+
+            <button>Add a new card</button>
+        </div>
+        <article class="card-row" th:each="card: ${cards}">
+            <div class="card">
+                <p th:text="${card.name}"></p>
+                <p th:text="${card.apr}"></p>
+            </div>
+            <div class="card-buttons">
+                <!-- thmyleaf href syntax reference -->
+                <!-- <button><a th::href="@{statement/${card.id}}">View statements</a></button> -->
+                 <button><a>View</a></button>
+                <button>View transactions</button>
+                <button>Cancel cards</button>
+            </div>
+        </article>
+
+    </section>
+</body>
+
+</html>
+
+
+<style>
+
+
+    body {
+        display: flex;
+        justify-content: flex-start;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 20px;
+        color: black;
+    }
+
+    .container {
+        background-color: #cae2f7;
+        border: 7px;
+        border-style: solid;
+        border-radius: 4px;
+        border-color: #0b2574;
+        padding: 10px;
+        width: 50%;
+        display: flex;
+        flex-direction: column;
+        align-items: space-between;
+
+
+
+
+    }
+
+    .balance {
+        border-radius: 10px;
+        border: 2px;
+        border-color: black;
+        border-style: solid;
+        padding: 4px 6px;
+    }
+
+
+
+    .balance-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+
+    .card-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+
+    .card {
+        width: 300px;
+        height: 150px;
+        border: 2px;
+        border-style: solid;
+        border-radius: 2px;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+
+    .card-buttons {
+        width: 60%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    button {
+        border: 2px;
+        border-color: black;
+        padding: 4px 6px;
+        border-style: solid;
+        border-radius: 10px;
+        font-size: 20px;
+        font-weight: 500;
+        background-color: #00175A;
+        color: white;
+    }
+
+    .heading {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100vw;
+    }
+</style>
