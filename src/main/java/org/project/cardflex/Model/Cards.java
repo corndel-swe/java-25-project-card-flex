@@ -48,6 +48,8 @@ public class Cards {
         this.refreshDate = refreshDate;
         this.balance = balance;
     }
+
+
     // ------------- Getters And Setters ------------------- //
     public Cards(int userId) {
         this.userId = userId;
