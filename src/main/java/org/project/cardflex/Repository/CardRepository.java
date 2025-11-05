@@ -24,10 +24,11 @@ public class CardRepository {
             Random r = new Random();
             float APR = 0;
             int creditLimit = 0;
-            if (Boolean.parseBoolean(cardName = "Gold".toLowerCase())) {
+            cardName.toUpperCase(); // Ensures that cardName is consistent
+            if (cardName.equals("GOLD")) {
                 APR = 10.70F;
                 creditLimit = 5000;
-            } else if (Boolean.parseBoolean(cardName = "Platinum".toLowerCase())) {
+            } else if (cardName.equals("PLATINUM")) {
                 APR = 15.10F;
                 creditLimit = 15000;
             } else {
@@ -201,16 +202,30 @@ public class CardRepository {
 
 
 
-// Testing the method
-    public static void main(String[] args) throws SQLException {
-        var Cardid = 1;
-        System.out.println(viewCardBalance(Cardid));
-        System.out.println(20.00 / 100.00 + 1 );
-        System.out.println(viewAPR(Cardid));
-        applyAPR(Cardid);
+//// Testing the method
+//    public static void main(String[] args) throws SQLException {
+//        var Cardid = 1;
+//        System.out.println(viewCardBalance(Cardid));
+//        System.out.println(20.00 / 100.00 + 1 );
+//        System.out.println(viewAPR(Cardid));
+//        applyAPR(Cardid);
+//    }
+//
+//}
+
+    // create method to delete card if there's no remaining balance to be paid off on the card
+
+    public static void deleteCard(int cardId) throws SQLException {
+
+        var deleteQuery = "DELETE FROM cards WHERE id = ? AND balance = 0";
+
+        try (   var connection = DB.getConnection();
+                var statement = connection.prepareStatement(deleteQuery)) {
+            statement.setInt(1, cardId);
+            statement.executeUpdate();
+        }
+
     }
-
 }
-
 
 
