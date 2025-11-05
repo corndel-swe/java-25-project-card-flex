@@ -92,7 +92,8 @@ public class CardRepository {
 
     }
 
-    public static void updateBalance (float balance, int id) throws SQLException{
+    //this will update the Card ids balance to a definable amount
+    public static void hardUpdateBalance (float balance, int id) throws SQLException{
         var query = "UPDATE cards SET balance = ROUND(?,2) WHERE id = ?";
 
         try (var con = DB.getConnection();
@@ -193,7 +194,7 @@ public class CardRepository {
                     }
 
             TransactionsRepository.addTransaction(transactions);
-            updateBalance((interest + balance), id);
+            hardUpdateBalance((interest + balance), id);
     }
 
 
