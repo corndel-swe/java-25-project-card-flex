@@ -10,8 +10,8 @@ import java.util.Random;
 public class CardRepository {
 
     //   Display Credit Card Type to Users
-    public static Cards newCreditCard(int userId, String cardName) throws SQLException {
-        var query = "INSERT INTO Cards (account_number, credit_limit, apr, refresh_date, card_name, balance), VALUES (? ? ? ? ? ?)";
+    public static void newCreditCard(int userId, String cardName) throws SQLException {
+        var query = "INSERT INTO cards (account_number, credit_limit, apr, refresh_date, card_name, balance, user_id ) VALUES (?, ?,?,?,?,?,?)";
         try (var con = DB.getConnection();
              var stmt = con.prepareStatement(query)) {
             Random r = new Random();
@@ -27,22 +27,16 @@ public class CardRepository {
                 APR = 18.00F;
                 creditLimit = 25000;
             }
+            int accountNumber = r.nextInt(100000, 999999);
 
-            int accountNumber = r.nextInt(10000);
             stmt.setInt(1, accountNumber); // Check to see if it's unique
             stmt.setFloat(2, creditLimit);
             stmt.setFloat(3, APR);
             stmt.setString(4, "1");
             stmt.setString(5, cardName);
-            stmt.setInt(6, 0);
-            try (var rs = stmt.executeQuery();) {
-                var accountNum = rs.getInt(3);
-                var creditLim = rs.getInt(4);
-                var balance = rs.getInt(5);
-                var apr = rs.getFloat(6);
-                var startDate = rs.getString(7);
-                return new Cards(accountNum, creditLim, apr, cardName, startDate, balance);
-            }
+            stmt.setFloat(6, 0);
+            stmt.setInt(7, userId);
+            stmt.executeUpdate();
 
         }
     }
@@ -63,7 +57,7 @@ public class CardRepository {
                     var startDate = rs.getString("start_date");
                     var refreshDate = rs.getString("refresh_date");
                     var cardName = rs.getString("card_name");
-                    var balance = rs.getInt("balance");
+                    var balance = rs.getFloat("balance");
                     cards.add(new Cards(userId, accountNumber, creditLimit, APR, cardName, startDate, refreshDate, balance));
                 }
                 return cards;
