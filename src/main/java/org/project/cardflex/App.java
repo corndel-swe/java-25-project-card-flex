@@ -1,6 +1,7 @@
 package org.project.cardflex;
 
 import io.javalin.Javalin;
+import org.project.cardflex.Repository.CardRepository;
 import org.project.cardflex.Repository.TransactionsRepository;
 
 import java.util.Map;
@@ -23,9 +24,18 @@ public class App {
 
                 });
 
-        app.get("/{cardId}/summary",ctx -> {
+        app.get("/summary/{cardId}",ctx -> {
             var id = Integer.parseInt(ctx.pathParam("cardId"));
+            CardRepository.updateBalance(id);
             var transactions = TransactionsRepository.findById(id);
+        });
+
+        app.get("/statement/{cardId}", ctx -> {
+           var id = Integer.parseInt((ctx.pathParam("cardId")));
+           CardRepository.updateBalance(id);
+           var statement = CardRepository.buildCardStatement(id);
+           var transactions = TransactionsRepository.findMonthlyById(id);
+
         });
     }
 }
