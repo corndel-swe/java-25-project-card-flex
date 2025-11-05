@@ -17,10 +17,11 @@ public class CardRepository {
             Random r = new Random();
             float APR = 0;
             int creditLimit = 0;
-            if (Boolean.parseBoolean(cardName = "Gold".toLowerCase())) {
+            cardName.toUpperCase(); // Ensures that cardName is consistent
+            if (cardName.equals("GOLD")) {
                 APR = 10.70F;
                 creditLimit = 5000;
-            } else if (Boolean.parseBoolean(cardName = "Platinum".toLowerCase())) {
+            } else if (cardName.equals("PLATINUM")) {
                 APR = 15.10F;
                 creditLimit = 15000;
             } else {
