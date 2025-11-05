@@ -23,16 +23,16 @@ public class TransactionsRepository {
                 while (resultSet.next()) {
 
                     int transactionId = (resultSet.getInt("id"));
-                    int sendersAccountNumber = (resultSet.getInt("sendersAccountNumber"));
-                    int sendersCardId = (resultSet.getInt("sendersCardId"));
-                    String recepientUsername = (resultSet.getString("recepientUsername"));
-                    int recepientAccountNumber = (resultSet.getInt("recepientAccountNumber"));
-                    String sendersUsername = (resultSet.getString("sendersUsername"));
+                    int sendersAccountNumber = (resultSet.getInt("senders_account_number"));
+                    int sendersCardId = (resultSet.getInt("senders_card_id"));
+                    String recipientUsername = (resultSet.getString("recipient_username"));
+                    int recipientAccountNumber = (resultSet.getInt("recipient_account_number"));
+                    String sendersUsername = (resultSet.getString("senders_username"));
                     float amount = (resultSet.getFloat("amount"));
                     String description = (resultSet.getString("description"));
-                    String transactionDate = resultSet.getString("transactionDate");
+                    String transactionDate = resultSet.getString("transaction_date");
 
-                    transactions.add(new Transactions(transactionId, sendersAccountNumber, sendersCardId, recepientUsername, recepientAccountNumber, sendersUsername, amount, description, transactionDate));
+                    transactions.add(new Transactions(transactionId, sendersAccountNumber, sendersCardId, recipientUsername, recipientAccountNumber, sendersUsername, amount, description, transactionDate));
                 }
 
                 return transactions;
