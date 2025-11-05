@@ -77,8 +77,26 @@ public class App {
             var transactions = TransactionsRepository.findById(id);
         });
 
-        app.get("/", ctx -> {
-            ctx.render("/cards.html", Map.of("cards", creditCards));
+        app.post("/cards/{user_id}",
+                ctx -> {
+                    var id = Integer.parseInt(ctx.pathParam("user_id"));
+                    CardRepository.newCreditCard(id, "Platinum");
+                    ctx.status(200);
+                    ctx.result("Card added");
+                });
+
+        app.delete("/cards/{card_id}",
+                ctx -> {
+                    var id = Integer.parseInt(ctx.pathParam("card_id"));
+                            CardRepository.deleteCard(id);
+                            ctx.status(200);
+                            ctx.result("Card deleted");
+
+                });
+
+        app.get("/",
+                ctx -> {
+                ctx.render("/cards.html", Map.of("cards", creditCards));
 
         });
     }

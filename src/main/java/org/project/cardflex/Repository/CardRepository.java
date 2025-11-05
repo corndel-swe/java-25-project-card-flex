@@ -65,7 +65,20 @@ public class CardRepository {
             }
         }
     }
-}
 
+    // create method to delete card if there's no remaining balance to be paid off on the card
+
+    public static void deleteCard(int cardId) throws SQLException {
+
+        var deleteQuery = "DELETE FROM cards WHERE id = ? AND balance = 0";
+
+        try (   var connection = DB.getConnection();
+                var statement = connection.prepareStatement(deleteQuery)) {
+            statement.setInt(1, cardId);
+            statement.executeUpdate();
+        }
+
+    }
+}
 
 
