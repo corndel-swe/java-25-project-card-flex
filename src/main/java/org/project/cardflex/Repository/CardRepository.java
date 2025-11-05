@@ -33,12 +33,14 @@ public class CardRepository {
 
         }
     }
-
+    //Call method after any addition of transactions or before any use of balance
     public static void updateBalance(int id) throws SQLException{
         var query = "UPDATE cards SET balance = (SELECT SUM(amount) FROM transactions INNER JOIN cards_transactions ON transactions.id = cards_transactions.transactions_id WHERE cards.id = ?) WHERE cards.id = ?";
         try (Connection con = DB.getConnection();
             PreparedStatement preparedStatement = con.prepareStatement(query)) {
             preparedStatement.setInt(1,id);
+            preparedStatement.setInt(2,id);
+            preparedStatement.executeUpdate();
         }
     }
 }
