@@ -1,6 +1,7 @@
 package org.project.cardflex;
 
 import io.javalin.Javalin;
+import org.project.cardflex.Repository.CardRepository;
 import org.project.cardflex.Repository.TransactionsRepository;
 
 import java.util.Map;
@@ -20,14 +21,13 @@ public class App {
 
     public App() {
         app = Javalin.create(config -> {});
+        app.post(
+                "/cards/{id}",
+                ctx -> {
+                    var id = Integer.parseInt(ctx.pathParam("id"));
+                    CardRepository.newCreditCard(id, "Black");
+                }
+        );
 
-        // Test for transactions
-////        app.get(
-////                "/transactions/{id}",
-////                ctx -> {
-////                    var id = Integer.parseInt(ctx.pathParam("id"));
-////                    ctx.json(TransactionsRepository.findById(id));
-//                }
-//        );
     }
 }
