@@ -71,6 +71,48 @@ public class CardRepository {
             }
         }
     }
+
+    // check balance on card
+
+    public static int checkBalance(int id, int userId, int balance) throws SQLException {
+
+        var balanceQuery = "SELECT balance FROM cards WHERE id = ?";
+
+        try (
+                var connection = DB.getConnection();
+                var statement = connection.prepareStatement(balanceQuery);
+                var rs = statement.executeQuery();
+
+        ) {
+
+            var cardBalance = rs.getInt("balance");
+            statement.setInt(1, id);
+            statement.setInt(2, userId);
+            statement.setInt(3, balance);
+            statement.executeUpdate();
+
+            return cardBalance;
+        }
+    }
+
+    // create method to delete card
+
+    public static void deleteCard(int id, int userId) throws SQLException {
+
+        var deleteQuery = "DELETE id FROM cards WHERE id = ?  AND balance = 0";
+
+        try (
+                var connection = DB.getConnection();
+                var statement = connection.prepareStatement(deleteQuery)
+
+                ) {
+
+            statement.setInt(1, id);
+            statement.setInt(2, userId);
+            statement.executeUpdate();
+        }
+
+    }
 }
 
 
