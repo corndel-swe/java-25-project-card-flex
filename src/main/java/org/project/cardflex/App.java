@@ -85,14 +85,6 @@ public class App {
                     ctx.result("Card added");
                 });
 
-        app.get("/balance/{card_id}",
-                ctx -> {
-                var id = Integer.parseInt(ctx.pathParam("card_id"));
-                CardRepository.checkBalance(id);
-                ctx.status(200);
-                });
-
-
         app.delete("/cards/{card_id}",
                 ctx -> {
                     var id = Integer.parseInt(ctx.pathParam("card_id"));
@@ -102,8 +94,9 @@ public class App {
 
                 });
 
-        app.get("/", ctx -> {
-            ctx.render("/cards.html", Map.of("cards", creditCards));
+        app.get("/",
+                ctx -> {
+                ctx.render("/cards.html", Map.of("cards", creditCards));
 
         });
     }

@@ -66,29 +66,6 @@ public class CardRepository {
         }
     }
 
-    // check balance on card
-
-    public static int checkBalance(int cardId/*int userId, int balance*/) throws SQLException {
-
-        var balanceQuery = "SELECT FROM cards WHERE balance = ?";
-
-        try (
-                var connection = DB.getConnection();
-                var statement = connection.prepareStatement(balanceQuery);
-                var rs = statement.executeQuery();
-
-        ) {
-
-            var cardBalance = rs.getInt("balance");
-            statement.setInt(1, cardId);
-            /*statement.setInt(2, userId);
-            statement.setInt(3, balance);*/
-            statement.executeUpdate();
-
-            return cardBalance;
-        }
-    }
-
     // create method to delete card if there's no remaining balance to be paid off on the card
 
     public static void deleteCard(int cardId) throws SQLException {
