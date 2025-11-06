@@ -4,6 +4,7 @@ import io.javalin.Javalin;
 import io.javalin.rendering.template.JavalinThymeleaf;
 import org.project.cardflex.Model.Cards;
 import org.project.cardflex.Model.User;
+import org.project.cardflex.Repository.CardRepository;
 import org.project.cardflex.Repository.TransactionsRepository;
 import org.project.cardflex.Repository.UserRepository;
 import org.thymeleaf.TemplateEngine;
@@ -120,6 +121,16 @@ public class App {
             } else {
                 ctx.render("/login.html", Map.of("error", "Invalid username"));
             }
+        });
+
+        app.post("/{userId}/dashboard/apply/{cardName}", ctx -> {
+            int id = Integer.parseInt(ctx.pathParam("userId"));
+            // Assigns the card to the User
+            String cardName = ctx.pathParam("cardName");
+            CardRepository.newCreditCard(id,cardName);
+            //Redirecting to Dashboard with new assigned Credit Card Visable
+            ctx.redirect(String.format("%d/dashboard",id));
+
         });
     }
 

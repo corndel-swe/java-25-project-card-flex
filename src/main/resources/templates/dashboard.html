@@ -47,9 +47,17 @@
             <p> APR = <span th:text="${card.apr}"></span> % </p>
             <p> Credit Limit = £<span th:text="${card.creditLimit}"></span> </p>
         </div>
-        <div class="card-buttons">
-            <button>Apply</button>
-        </div>
+
+        <form
+            th:action = "{/{userId}/dashboard/apply/${card.name}}" method = "post">
+<!--            <button><a th:href="@{/${userId}/dashboard/apply/${card.name}}">Apply</a></button>-->
+            <button type = "submit">Apply</button>
+
+
+        </form>
+<!--        <div class="card-buttons">-->
+<!--            -->
+<!--        </div>-->
     </article>
 
 </section>
