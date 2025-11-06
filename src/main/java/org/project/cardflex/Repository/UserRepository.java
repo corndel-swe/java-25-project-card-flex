@@ -1,6 +1,7 @@
 package org.project.cardflex.Repository;
 
 import org.project.cardflex.DB;
+import org.project.cardflex.Model.Cards;
 import org.project.cardflex.Model.User;
 
 import java.sql.SQLException;
@@ -25,73 +26,77 @@ public class UserRepository {
                 var id = rs.getInt("id");
                 var userName = rs.getString("username");
                 var totalBalance = rs.getFloat("total_balance");
-                System.out.println(id + userName + totalBalance);
 
-                return new User (id, userName, totalBalance);
+                return new User(id, userName, totalBalance);
+            }
 
-    }
-
-}
+        }
     }
 
     //returns a list of all cardids relating to a user EB
-    public static List<Integer> getUsersCardids(int user_id) throws SQLException{
+    public static List<Cards> getAllCardsByUserId(int user_id) throws SQLException {
 
-        var query = "SELECT card_id from users_cards where user_id = ?";
-
+        var query = "SELECT users_cards.card_id, cards.* " +
+                "FROM users_cards INNER JOIN cards ON cards.user_id = users_cards.user_id " +
+                "WHERE users_cards.user_id = ?";
 
         try (var con = DB.getConnection();
              var stmt = con.prepareStatement(query)) {
 
-            stmt.setString(1, String.valueOf(user_id));
-            var allcardIds = new ArrayList<Integer>();
-            try (var rs = stmt.executeQuery()) {
-                if (!rs.next()) {
-                    return null;
-                }
-                while (rs.next()) {
-                    var cardid = rs.getInt("id");
+            stmt.setInt(1, user_id);
+            List<Cards> cards = new ArrayList<>();
 
-                    allcardIds.add(cardid);
+            try (var rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    var cardId = rs.getInt("card_id");
+                    var userId = rs.getInt("user_id");
+                    var accountNumber = rs.getInt("account_number");
+                    var cardName = rs.getString("card_name");
+                    var creditLimit = rs.getFloat("credit_limit");
+                    var cardBalance = rs.getFloat("balance");
+                    var startDate = rs.getString("start_date");
+                    var refreshDate = rs.getInt("refresh_date");
+                    var apr = rs.getFloat("apr");
+
+
+
+                    cards.add(new Cards(cardId, userId, accountNumber, creditLimit, apr, startDate, refreshDate, cardName, cardBalance ));
                 }
             }
-            return allcardIds;
+            return cards;
         }
 
     }
 
 
     //Method will find the users total balance sourced from Users table
-    public static float findTotalBalance(String username) throws SQLException{
-        var query = "SELECT total_balance from users where username = ?";
-
+    public static float findTotalBalance(int userId) throws SQLException {
+        var query = "SELECT total_balance from users where id = ?";
 
         try (var con = DB.getConnection();
-            var stmt = con.prepareStatement(query)) {
+             var stmt = con.prepareStatement(query)) {
 
-            stmt.setString(1, username);
+            stmt.setInt(1, userId);
 
             try (var rs = stmt.executeQuery()) {
                 if (!rs.next()) {
-                    return Float.parseFloat(null);
+                    return 0f;
                 }
-                var total_balance = rs.getFloat("total_balance");
 
-                return total_balance;
+                return rs.getFloat("total_balance");
             }
 
         }
 
     }
 
-//    public static void main(String[] args){
-//        try {
-//            System.out.println(checkUsername("MashFetchum"));
-//            System.out.println("hi");
-//        } catch (SQLException e) {
-//            System.out.println("uh oh");
-//            throw new RuntimeException(e);
-//        }
-//    }
+    public static void main(String[] args) {
+        try {
+            System.out.println(getAllCardsByUserId(1));
+        } catch (SQLException e) {
+            System.out.println("uh oh");
+            throw new RuntimeException(e);
+        }
+    }
 
 }

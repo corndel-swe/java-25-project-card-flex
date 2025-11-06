@@ -2,16 +2,15 @@ package org.project.cardflex;
 
 import io.javalin.Javalin;
 import io.javalin.rendering.template.JavalinThymeleaf;
+import org.project.cardflex.Model.Cards;
 import org.project.cardflex.Model.User;
 import org.project.cardflex.Repository.TransactionsRepository;
 import org.project.cardflex.Repository.UserRepository;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class App {
     private final Javalin app;
@@ -32,21 +31,21 @@ public class App {
 
         // Card 1
         Map<String, String> card1 = new HashMap<>();
-        card1.put("name", "Gold card");
+        card1.put("name", "GOLD");
         card1.put("apr", "15.99");
         card1.put("creditLimit", "10000");
         creditCards.add(card1);
 
         // Card 2
         Map<String, String> card2 = new HashMap<>();
-        card2.put("name", "Black card");
+        card2.put("name", "BLACK");
         card2.put("apr", "18.49");
         card2.put("creditLimit", "7500");
         creditCards.add(card2);
 
         // Card 3
         Map<String, String> card3 = new HashMap<>();
-        card3.put("name", "Platinum Card");
+        card3.put("name", "PLATINUM");
         card3.put("apr", "20.99");
         card3.put("creditLimit", "15000");
         creditCards.add(card3);
@@ -76,8 +75,22 @@ public class App {
             var transactions = TransactionsRepository.findById(id);
         });
 
-        app.get("{useId}/dashboard", ctx -> {
-            ctx.render("/dashboard.html", Map.of("cards", creditCards));
+        app.get("{userId}/dashboard", ctx -> {
+            int id = Integer.parseInt(ctx.pathParam("userId"));
+            // total balance
+            float totalBalance = UserRepository.findTotalBalance(id);
+
+            // User owned cards
+            List<Cards> ownedCards = UserRepository.getAllCardsByUserId(id);
+            Set<String> ownedType = ownedCards.stream().map(Cards::getCardName).collect(Collectors.toSet());
+
+            // User available cards
+            List<Map<String, String>> availableCards = creditCards.stream().
+                    filter(card -> !ownedType.contains(card.get("name"))).toList();
+
+            System.out.println(ownedCards);
+
+            ctx.render("/dashboard.html", Map.of("ownedCards", ownedCards, "availableCards", availableCards, "totalBalance", totalBalance));
         });
 
         app.get("/", ctx -> {

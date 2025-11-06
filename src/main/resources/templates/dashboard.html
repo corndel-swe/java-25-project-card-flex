@@ -8,38 +8,49 @@
 </head>
 
 <body>
-    <section class="heading">
+<section class="heading">
 
-        <h1 style="justify-self: center;">CardFlex Homepage</h1>
-        <button style="align-self: flex-start;">Sign out</button>
-    </section>
-    <section class="container">
-        <div class="balance-row">
-            <div>
-                <h3>Credit Cards</h3>
-                <p>You have X amount of credit cards</p>
-            </div>
-            <div class="balance">
-                Total balance: £xxxx
-            </div>
-
-            <button>Add a new card</button>
+    <h1 style="justify-self: center;">CardFlex Homepage</h1>
+    <button style="align-self: flex-start;">Sign out</button>
+</section>
+<section class="container">
+    <div class="balance-row">
+        <div>
+            <h3>Credit Cards</h3>
+            <p>You have X amount of credit cards</p>
         </div>
-        <article class="card-row" th:each="card: ${cards}">
-            <div class="card">
-                <p th:text="${card.name}"></p>
-                <p th:text="${card.apr}"></p>
-            </div>
-            <div class="card-buttons">
-                <!-- thmyleaf href syntax reference -->
-                <!-- <button><a th::href="@{statement/${card.id}}">View statements</a></button> -->
-                 <button><a>View</a></button>
-                <button>View transactions</button>
-                <button>Cancel cards</button>
-            </div>
-        </article>
+        <div class="balance">
+            Total balance: <span th:text="${'£' + totalBalance}"></span>
+        </div>
 
-    </section>
+        <button>Add a new card</button>
+    </div>
+
+    <h3>Owned Cards</h3>
+    <article class="card-row" th:each="card: ${ownedCards}">
+        <div class="card">
+            <p th:text="${card.getCardName()}"></p>
+            <p th:text="${card.getBalance()}"></p>
+        </div>
+        <div class="card-buttons">
+            <button><a th:href="@{/cardSummary/{cardId}(cardId=${card.getId()})}">View Card Summary</a></button>
+            <button>Cancel cards</button>
+        </div>
+    </article>
+
+    <h3>Available Cards</h3>
+
+    <article class="card-row" th:each="card: ${availableCards}">
+        <div class="card">
+            <p th:text="${card.name}"></p>
+            <p th:text="${card.apr}"></p>
+        </div>
+        <div class="card-buttons">
+            <button>Apply</button>
+        </div>
+    </article>
+
+</section>
 </body>
 
 </html>

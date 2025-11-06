@@ -63,7 +63,7 @@ public class CardRepository {
                     var creditLimit = rs.getFloat("credit_limit");
                     var APR = rs.getFloat("apr");
                     var startDate = rs.getString("start_date");
-                    var refreshDate = rs.getString("refresh_date");
+                    var refreshDate = rs.getInt("refresh_date");
                     var cardName = rs.getString("card_name");
                     var balance = rs.getFloat("balance");
                     cards.add(new Cards(userId, accountNumber, creditLimit, APR, cardName, startDate, refreshDate, balance));
