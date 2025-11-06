@@ -49,6 +49,17 @@ public class Cards {
         this.balance = balance;
     }
 
+    public Cards(int id, int userId, int accountNumber, float creditLimit, float APR, String startDate, String refreshDate, String cardName, float balance) {
+        this.id = id;
+        this.userId = userId;
+        this.accountNumber = accountNumber;
+        this.creditLimit = creditLimit;
+        this.APR = APR;
+        this.startDate = startDate;
+        this.refreshDate = refreshDate;
+        this.cardName = cardName;
+        this.balance = balance;
+    }
 
     // ------------- Getters And Setters ------------------- //
     public Cards(int userId) {
