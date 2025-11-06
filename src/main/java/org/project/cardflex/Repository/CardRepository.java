@@ -2,8 +2,12 @@ package org.project.cardflex.Repository;
 
 import org.project.cardflex.DB;
 import org.project.cardflex.Model.Cards;
+import org.project.cardflex.Model.Statement;
 import org.project.cardflex.Model.Transactions;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -225,6 +229,39 @@ public class CardRepository {
             statement.executeUpdate();
         }
 
+    }
+    public static List<Statement> buildCardStatement(int id) throws SQLException {
+        var query = "SELECT cards.account_number, cards.balance, cards.credit_limit FROM cards WHERE cards.id = ?";
+        List<Statement> statement = new ArrayList<>();
+        updateBalance(id);
+        try (Connection con = DB.getConnection();
+             PreparedStatement preparedStatement = con.prepareStatement(query)) {
+
+            preparedStatement.setInt(1, id);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    int accountNumber = (resultSet.getInt("account_number"));
+                    float balance = (resultSet.getFloat("balance"));
+                    float creditLimit = (resultSet.getFloat("credit_limit"));
+                    float remainingBalance = creditLimit - balance;
+                    statement.add(new Statement(accountNumber, balance, remainingBalance));
+                }
+                return statement;
+            }
+
+        }
+    }
+
+    //Call method after any addition of transactions or before any use of balance
+    public static void updateBalance(int id) throws SQLException{
+        var query = "UPDATE cards SET balance = (SELECT SUM(amount) FROM transactions INNER JOIN cards_transactions ON transactions.id = cards_transactions.transactions_id WHERE cards.id = ?) WHERE cards.id = ?";
+        try (Connection con = DB.getConnection();
+             PreparedStatement preparedStatement = con.prepareStatement(query)) {
+            preparedStatement.setInt(1,id);
+            preparedStatement.setInt(2,id);
+            preparedStatement.executeUpdate();
+        }
     }
 }
 
