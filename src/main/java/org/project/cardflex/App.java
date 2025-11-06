@@ -6,6 +6,7 @@ import io.javalin.rendering.template.JavalinThymeleaf;
 import org.project.cardflex.Model.Transactions;
 import org.project.cardflex.Repository.CardRepository;
 import org.project.cardflex.Repository.TransactionsRepository;
+import org.project.cardflex.Repository.UserRepository;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
@@ -75,7 +76,7 @@ public class App {
 
         app.get("/{cardId}/summary", ctx -> {
             var id = Integer.parseInt(ctx.pathParam("cardId"));
-            CardRepository.updateBalance(id);
+//            CardRepository.updateBalance(id);
             var transactions = TransactionsRepository.findById(id);
         });
 
@@ -90,6 +91,28 @@ public class App {
 
        app.get("/register", ctx -> {
         ctx.render("/register.html");
+       });
+
+//       app.post(
+//               "/username",
+//               ctx -> {
+//                   var username = UserRepository.checkUsername("TrustFundBaby");
+//                   System.out.println();
+//                   ctx.json(username);
+//               }
+//       );
+
+       app.post("/", ctx ->{
+           var login = ctx.formParam("login");
+           String username = ctx.formParamAsClass("login", String.class).get();
+           System.out.println(username);
+           var check = UserRepository.checkUsername(username);
+           if (check != null) {
+               ctx.redirect("/cards");
+           }
+           else {
+               ctx.redirect("/");
+           }
        });
     }
 
