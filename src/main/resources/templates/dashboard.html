@@ -30,7 +30,8 @@
     <article class="card-row" th:each="card: ${ownedCards}">
         <div class="card">
             <p th:text="${card.getCardName()}"></p>
-            <p th:text="${card.getBalance()}"></p>
+            <p> APR = <span th:text="${card.apr}"></span> % </p>
+            <p> Balance = £<span th:text="${card.getBalance()}"> </span> </p>
         </div>
         <div class="card-buttons">
             <button><a th:href="@{/cardSummary/{cardId}(cardId=${card.getId()})}">View Card Summary</a></button>
@@ -43,7 +44,8 @@
     <article class="card-row" th:each="card: ${availableCards}">
         <div class="card">
             <p th:text="${card.name}"></p>
-            <p th:text="${card.apr}"></p>
+            <p> APR = <span th:text="${card.apr}"></span> % </p>
+            <p> Credit Limit = £<span th:text="${card.creditLimit}"></span> </p>
         </div>
         <div class="card-buttons">
             <button>Apply</button>
