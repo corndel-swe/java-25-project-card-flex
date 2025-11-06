@@ -1,21 +1,17 @@
 package org.project.cardflex;
 
 import io.javalin.Javalin;
-import io.javalin.http.staticfiles.Location;
 import io.javalin.rendering.template.JavalinThymeleaf;
-import org.project.cardflex.Model.Transactions;
-import org.project.cardflex.Repository.CardRepository;
+import org.project.cardflex.Model.User;
 import org.project.cardflex.Repository.TransactionsRepository;
 import org.project.cardflex.Repository.UserRepository;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
-import java.util.Map;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ArrayList;
-
-import static io.javalin.apibuilder.ApiBuilder.path;
+import java.util.Map;
 
 public class App {
     private final Javalin app;
@@ -80,18 +76,18 @@ public class App {
             var transactions = TransactionsRepository.findById(id);
         });
 
-        app.get("/cards", ctx -> {
-            ctx.render("/cards.html", Map.of("cards", creditCards));
-
+        app.get("{useId}/dashboard", ctx -> {
+            ctx.render("/dashboard.html", Map.of("cards", creditCards));
         });
 
-       app.get("/", ctx -> {
-        ctx.render("/login.html");
-       }); 
+        app.get("/", ctx -> {
 
-       app.get("/register", ctx -> {
-        ctx.render("/register.html");
-       });
+            ctx.render("/login.html");
+        });
+
+        app.get("/register", ctx -> {
+            ctx.render("/register.html");
+        });
 
 //       app.post(
 //               "/username",
@@ -102,18 +98,16 @@ public class App {
 //               }
 //       );
 
-       app.post("/", ctx ->{
-           var login = ctx.formParam("login");
-           String username = ctx.formParamAsClass("login", String.class).get();
-           System.out.println(username);
-           var check = UserRepository.checkUsername(username);
-           if (check != null) {
-               ctx.redirect("/cards");
-           }
-           else {
-               ctx.redirect("/");
-           }
-       });
+        app.post("/", ctx -> {
+            String username = ctx.formParamAsClass("login", String.class).get();
+            User user = UserRepository.checkUsername(username);
+
+            if (user != null) {
+                ctx.redirect(String.format("%d/dashboard", user.getId()));
+            } else {
+                ctx.render("/login.html", Map.of("error", "Invalid username"));
+            }
+        });
     }
 
 
