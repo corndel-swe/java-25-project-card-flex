@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class TransactionsRepository {
@@ -95,8 +96,31 @@ public class TransactionsRepository {
 
     }
 
-    // Test adding Transaction
-    public static void main(String[] args) throws SQLException {
-        TransactionsRepository.addTransaction(new Transactions(1, 1,"Cardflex",  123456,"user", 125, "Test transaction", "01-01-0000"));
+    public static void makePurchase(int senderAccountNumber, int recepientAccountNumber, int senderCardId, Float amount, String description) throws SQLException {
+         var query = "INSERT INTO transactions (senders_card_id, senders_account_number, recepient_account_number, amount, description, transaction_date) VALUES(?,?,?,?,?, DATE('NOW')";
+        try ( var con = DB.getConnection();
+              var sendStmt = con.prepareStatement(query)){
+            sendStmt.setInt(1,senderCardId);
+            sendStmt.setInt(2, senderAccountNumber);
+            sendStmt.setInt(3, recepientAccountNumber);
+            sendStmt.setFloat(4, amount);
+            sendStmt.setString(5, description);
+            sendStmt.executeUpdate();
+        }
+
+        try ( var con = DB.getConnection();
+              var recieveStmt = con.prepareStatement(query)){
+            recieveStmt.setInt(1,senderCardId);
+            recieveStmt.setInt(2, senderAccountNumber);
+            recieveStmt.setInt(3, recepientAccountNumber);
+            recieveStmt.setFloat(4, amount * -1);
+            recieveStmt.setString(5, description);
+            recieveStmt.executeUpdate();
+        }
     }
-}
+
+    }
+    // Test adding Transaction
+//    public static void main(String[] args) throws SQLException {
+//        TransactionsRepository.addTransaction(new Transactions(1, 1,"Cardflex",  123456,"user", 125, "Test transaction", "01-01-0000"));
+//    }

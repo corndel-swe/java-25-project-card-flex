@@ -73,10 +73,11 @@ public class App {
                     config.fileRenderer(new JavalinThymeleaf(engine));
                 });
 
-        app.get("/{cardId}/summary", ctx -> {
-            var id = Integer.parseInt(ctx.pathParam("cardId"));
-            CardRepository.updateBalance(id);
-            var transactions = TransactionsRepository.findById(id);
+        app.get("/cardSummary/{cardId}/", ctx -> {
+            int cardId = Integer.parseInt(ctx.pathParam("cardId"));
+            var transactions = TransactionsRepository.findById(cardId);
+            var card = CardRepository.findCardsByUserID(cardId);
+            ctx.render("/cardSummary.html", Map.of("cardId", cardId, "transactions", transactions, "card", card));
         });
 
         app.get("/cards", ctx -> {

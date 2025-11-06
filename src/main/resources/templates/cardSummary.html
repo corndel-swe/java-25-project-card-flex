@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Card summary</title>
+</head>
+<body>
+<h1>Test</h1>
+
+<p th:text="transactions"></p>
+<p th:text="${transactions}"></p>
+
+<ul>
+    <li th:text="${transaction.amount}" th:each="transaction : ${transactions}"></li>
+</ul>
+<p th:text="${cardId}"></p>
+<p th:text="${card[0].accountNumber}"></p>
+<p th:text="${card[0].balance}"></p>
+
+<p th:text="cardId"></p>
+</body>
+</html>
