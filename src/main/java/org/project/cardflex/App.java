@@ -144,6 +144,12 @@ public class App {
 
             ctx.redirect("/dashboard");
         });
+        app.get("/test/interest/{cardId}", ctx ->{
+            var id = Integer.parseInt(ctx.pathParam("cardId"));
+            CardRepository.applyAPR(id);
+            ctx.redirect("/dashboard");
+            //this exists to demonstrate applying interest
+        });
     }
 
     @NotNull
