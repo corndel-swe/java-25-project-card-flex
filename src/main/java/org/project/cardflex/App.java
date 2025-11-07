@@ -77,7 +77,9 @@ public class App {
             int cardId = Integer.parseInt(ctx.pathParam("cardId"));
             var transactions = TransactionsRepository.findById(cardId);
             var card = CardRepository.findCardsByUserID(cardId);
-            ctx.render("/cardSummary.html", Map.of("cardId", cardId, "transactions", transactions, "card", card));
+
+            var available = card.get(0).getCreditLimit() - card.get(0).getBalance();
+            ctx.render("/cardSummary.html", Map.of("cardId", cardId, "transactions", transactions, "card", card, "available", available));
         });
 
         app.get("/cards", ctx -> {
@@ -85,13 +87,13 @@ public class App {
 
         });
 
-       app.get("/", ctx -> {
-        ctx.render("/login.html");
-       }); 
+        app.get("/", ctx -> {
+            ctx.render("/login.html");
+        });
 
-       app.get("/register", ctx -> {
-        ctx.render("/register.html");
-       });
+        app.get("/register", ctx -> {
+            ctx.render("/register.html");
+        });
     }
 
 
