@@ -1,0 +1,219 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #fffff2;
+  font-family: sans-serif;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  background-color: transparent;
+  cursor: pointer;
+  font: inherit;
+}
+
+.heading {
+  font-size: 30px;
+  color: #2c3a44;
+}
+
+.button {
+  background-color: #3c787e;
+  border-color: #3c787e;
+  border-radius: 20px;
+  padding: 10px 15px;
+  display: block;
+  text-transform: uppercase;
+  font-weight: bold;
+  color: #fffff2;
+}
+
+.error {
+  color: #b22222;
+  background-color: #ffd2d2;
+  width: fit-content;
+}
+
+.navigation {
+  display: flex;
+  justify-content: space-between;
+}
+
+.navigation-title {
+  padding: 10px 20px;
+  width: 200px;
+  height: 100%;
+  border-radius: 0 0 20px 0;
+}
+
+.navigation-button {
+  margin: 10px 20px;
+  padding: 10px;
+  background-color: unset;
+  color: #3c787e;
+  border: 0px solid unset;
+}
+
+/* LOGIN */
+
+.hero {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-logo,
+.hero-action {
+  max-width: 300px;
+  height: 350px;
+}
+
+.hero-logo {
+  flex-grow: 2;
+  border-radius: 20px 0 0 20px;
+  padding: 40px;
+}
+
+.background-gradient {
+  /* https://colorgradient.dev/gradient-generator/ */
+  background-size: 100% 100%;
+  background-position: 0px 0px, 0px 0px, 0px 0px, 0px 0px, 0px 0px, 0px 0px,
+    0px 0px, 0px 0px, 0px 0px, 0px 0px, 0px 0px;
+  background-image: radial-gradient(
+      18% 28% at 24% 50%,
+      #cefaffff 7%,
+      #073aff00 100%
+    ),
+    radial-gradient(18% 28% at 18% 71%, #ffffff59 6%, #073aff00 100%),
+    radial-gradient(70% 53% at 36% 76%, #73f2ffff 0%, #073aff00 100%),
+    radial-gradient(42% 53% at 15% 94%, #ffffffff 7%, #073aff00 100%),
+    radial-gradient(42% 53% at 34% 72%, #ffffffff 7%, #073aff00 100%),
+    radial-gradient(18% 28% at 35% 87%, #ffffffff 7%, #073aff00 100%),
+    radial-gradient(31% 43% at 7% 98%, #ffffffff 24%, #073aff00 100%),
+    radial-gradient(21% 37% at 72% 23%, #d3ff6d9c 24%, #073aff00 100%),
+    radial-gradient(35% 56% at 91% 74%, #8a4ffff5 9%, #073aff00 100%),
+    radial-gradient(74% 86% at 67% 38%, #6dffaef5 24%, #073aff00 100%),
+    linear-gradient(125deg, #4eb5ffff 1%, #4c00fcff 100%);
+}
+
+.logo {
+  font-size: 60px;
+  color: #2c3a44;
+}
+
+.logo span {
+  display: block;
+}
+
+.hero-action {
+  background-color: #f5f5f5;
+  border-radius: 0 20px 20px 0;
+  padding: 40px;
+}
+
+.hero-action > * {
+  margin-bottom: 20px;
+}
+
+.hero-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.hero-form .error {
+  margin-bottom: 10px;
+}
+
+.hero-input {
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #fffff2;
+  border-color: #fffff2;
+  outline: #fffff2;
+  margin: 10px 0;
+}
+
+.hero-button {
+  margin-top: 10px;
+}
+
+/* DASHBOARD */
+
+.dashboard {
+  margin: 10px auto;
+  padding: 20px 40px;
+  width: 1000px;
+  background-color: #f5f5f5;
+  border-radius: 20px;
+}
+
+.balance-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.balance-text {
+  margin-top: 10px;
+}
+
+.balance-total {
+  padding: 10px 10px;
+  border-radius: 10px;
+  border: 2px solid #3c787e;
+}
+
+.card-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin: 10px 0;
+}
+
+.card {
+  width: 300px;
+  height: 150px;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  border-radius: 10px;
+  opacity: 0.7;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.card:hover {
+  opacity: 1;
+}
+
+.card-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.GOLD {
+  background: linear-gradient(135deg, #ffd700, #ffa500);
+  color: #2c3a44;
+}
+
+.BLACK {
+  background: linear-gradient(135deg, #000000, #1a1a1a);
+  background-color: #003153;
+  background-image: linear-gradient(315deg, #003153 0%, #1b1b1b 74%);
+  color: #fffff2;
+}
+
+.PLATINUM {
+  background: linear-gradient(135deg, #e5e4e2, #c0c0c0);
+  color: #2c3a44;
+}

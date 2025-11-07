@@ -191,8 +191,6 @@ public class CardRepository {
     }
 
 
-
-
     // create method to delete card if there's no remaining balance to be paid off on the card
     public static void deleteCard(int cardId) throws SQLException {
 
@@ -238,6 +236,35 @@ public class CardRepository {
             preparedStatement.executeUpdate();
         }
     }
+
+    public static Cards getCardById(int id) throws SQLException {
+        var query = "SELECT * FROM cards WHERE id = ? ";
+
+        try (var con = DB.getConnection();
+             var stmt = con.prepareStatement(query)) {
+
+            stmt.setInt(1, id);
+
+            try (var rs = stmt.executeQuery()) {
+                if (!rs.next()) {
+                    return null;
+                }
+
+                var cardId = rs.getInt("id");
+                var userId = rs.getInt("user_id");
+                var accountNumber = rs.getInt("account_number");
+                var creditLimit = rs.getFloat("credit_limit");
+                var APR = rs.getFloat("apr");
+                var startDate = rs.getInt("start_date");
+                var refreshDate = rs.getString("refresh_date");
+                var cardName = rs.getString("card_name");
+                var balance = rs.getFloat("balance");
+
+                return new Cards(cardId, userId, accountNumber, creditLimit, APR, cardName, startDate, refreshDate, balance);
+            }
+        }
+    }
+
 }
 
 

@@ -3,54 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Login</title>
+    <title>Card Flex</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body>  
-<div class="header">
-    <h1>Card<span>Flex</span> Login</h1>
-</div>
+<body>
 
+<main class="hero">
+    <div class="hero-logo background-gradient">
+        <h1 class="logo">Card<span>Flex</span></h1>
+    </div>
 
-
-<main>
-<p>To use our platform, please type in your userame below:</p>
-<form action = "/" method = "post">
-    <p th:if="${error}" th:text="${error}"></p>
-    <label for="login">Username</label>
-    <input type="text" name="login" id="login" required>
-
-    <button type="submit">submit</button>
-</form>
+    <div class="hero-action">
+        <h2 class="heading">Login</h2>
+        <p>
+            For secure access to your account, please provide your registered username:
+        </p>
+        <form class="hero-form" action="/" method="post">
+            <p class="error" th:if="${error}" th:text="${error}"></p>
+            <label class="hero-label" for="login">Username</label>
+            <input class="hero-input" type="text" name="login" id="login" required>
+            <button class="button hero-button" type="submit">submit</button>
+        </form>
+    </div>
 </main>
 
 </body>
 </html>
-
-
-<style>
-.header {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-
-main {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-
-a:hover {
-    text-decoration: underline;
-    cursor: pointer;
-}
-
-span {
-    font-weight: 700;
-}
-
-
-</style>

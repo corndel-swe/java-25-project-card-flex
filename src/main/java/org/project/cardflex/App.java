@@ -52,10 +52,13 @@ public class App {
                     config.fileRenderer(new JavalinThymeleaf(engine));
                 });
 
-        app.get("/{cardId}/summary", ctx -> {
-            var id = Integer.parseInt(ctx.pathParam("cardId"));
-//            CardRepository.updateBalance(id);
-            var transactions = TransactionsRepository.findById(id);
+        app.get("/cardSummary/{cardId}/", ctx -> {
+            int cardId = Integer.parseInt(ctx.pathParam("cardId"));
+            var transactions = TransactionsRepository.findById(cardId);
+            var card = CardRepository.getCardById(cardId);
+
+            var available = card.getCreditLimit() - card.getBalance();
+            ctx.render("/cardSummary.html", Map.of("cardId", cardId, "transactions", transactions, "card", card, "available", available));
         });
 
         app.get("/dashboard", ctx -> {
@@ -144,7 +147,7 @@ public class App {
 
             ctx.redirect("/dashboard");
         });
-        app.get("/test/interest/{cardId}", ctx ->{
+        app.get("/test/interest/{cardId}", ctx -> {
             var id = Integer.parseInt(ctx.pathParam("cardId"));
             CardRepository.applyAPR(id);
             ctx.redirect("/dashboard");

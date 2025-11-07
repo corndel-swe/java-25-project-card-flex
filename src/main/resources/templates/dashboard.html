@@ -4,49 +4,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Cards</title>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+
 </head>
 
 <body>
-<section class="heading">
+<nav class="navigation">
+    <h1 class="navigation-title background-gradient"><a th:href="@{/dashboard}">CardFlex</a></h1>
+    <button class="button navigation-button"><a th:href="@{/}">Sign out</a></button>
+</nav>
 
-    <h1 style="justify-self: center;">CardFlex Homepage</h1>
-    <button style="align-self: flex-start;"><a th:href="@{/}">Sign out</a></button>
-</section>
-<section class="container">
+<main class="dashboard">
+
     <div class="balance-row">
         <div>
-            <h3>Credit Cards</h3>
-            <p>
+            <h3 class="heading">Credit Cards</h3>
+            <p class="balance-text">
                 You currently manage <span th:text="${#lists.size(ownedCards)}" class="highlight-count">5</span>
                 credit cards, with
                 <span th:text="${#lists.size(availableCards)}" class="highlight-count">3</span>
                 new opportunities available.
             </p>
-
         </div>
-        <div class="balance">
+        <p class="balance-total">
             Total balance: <span th:text="${'£' + totalBalance}"></span>
-        </div>
-
+        </p>
     </div>
 
-    <div th:if="${!#lists.isEmpty(ownedCards)}">
-        <h3>Owned Cards</h3>
+    <div class="owned-cards" th:if="${!#lists.isEmpty(ownedCards)}">
+        <h4 class="heading">Owned Cards</h4>
 
         <article class="card-row" th:each="card: ${ownedCards}">
-            <div class="card">
+            <div class="card" th:classappend=${card.getCardName()}>
                 <p th:text="${card.getCardName()}"></p>
                 <p> APR = <span th:text="${card.apr}"></span> % </p>
                 <p> Balance = £<span th:text="${card.getBalance()}"> </span></p>
             </div>
 
             <div class="card-buttons">
-                <button><a th:href="@{/cardSummary/{cardId}(cardId=${card.getId()})}">View Card Summary</a></button>
+                <button class="button card-button"><a th:href="@{/cardSummary/{cardId}(cardId=${card.getId()})}">View
+                    Card Summary</a></button>
 
                 <form th:action="@{/cards/{cardId}/delete(cardId=${card.id})}" method="post">
-
-                    <button type="submit" class="delete-button">
+                    <button type="submit" class="button cancel-button">
                         Cancel card
                     </button>
                 </form>
@@ -55,25 +56,24 @@
         </article>
     </div>
 
-
-    <div th:if="${!#lists.isEmpty(availableCards)}">
-        <h3>Available Cards</h3>
+    <div class="available-cards" th:if="${!#lists.isEmpty(availableCards)}">
+        <h4 class="heading">Available Cards</h4>
 
         <article class="card-row" th:each="card: ${availableCards}">
-            <div class="card">
+            <div class="card" th:classappend=${card.name}>
                 <p th:text="${card.name}"></p>
                 <p> APR = <span th:text="${card.apr}"></span> % </p>
                 <p> Credit Limit = £<span th:text="${card.creditLimit}"></span></p>
             </div>
 
             <form th:action="@{/apply/{cardName}(cardName=${card.name})}" method="post">
-                <button type="submit">Apply</button>
+                <button class="button button-apply" type="submit">Apply</button>
             </form>
 
         </article>
     </div>
 
-</section>
+</main>
 </body>
 
 </html>
@@ -82,94 +82,4 @@
 <style>
 
 
-    body {
-        display: flex;
-        justify-content: flex-start;
-        flex-direction: column;
-        align-items: center;
-        margin-top: 20px;
-        color: black;
-    }
-
-    .container {
-        background-color: #cae2f7;
-        border: 7px;
-        border-style: solid;
-        border-radius: 4px;
-        border-color: #0b2574;
-        padding: 10px;
-        width: 50%;
-        display: flex;
-        flex-direction: column;
-        align-items: space-between;
-
-
-
-
-    }
-
-    .balance {
-        border-radius: 10px;
-        border: 2px;
-        border-color: black;
-        border-style: solid;
-        padding: 4px 6px;
-    }
-
-
-
-    .balance-row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-left: 10px;
-        margin-right: 10px;
-    }
-
-    .card-row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-left: 10px;
-        margin-right: 10px;
-    }
-
-    .card {
-        width: 300px;
-        height: 150px;
-        border: 2px;
-        border-style: solid;
-        border-radius: 2px;
-        display: flex;
-        align-items: center;
-        flex-direction: column;
-        justify-content: center;
-    }
-
-
-    .card-buttons {
-        width: 60%;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    button {
-        border: 2px;
-        border-color: black;
-        padding: 4px 6px;
-        border-style: solid;
-        border-radius: 10px;
-        font-size: 20px;
-        font-weight: 500;
-        background-color: #00175A;
-        color: white;
-    }
-
-    .heading {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        width: 100vw;
-    }
 </style>
