@@ -1,7 +1,7 @@
 --insert example data into users table
 INSERT INTO users (id, username, total_balance) VALUES
-(1, 'TrustFundBaby', 1000.67),
-(2, 'ScroogeMcHuman', 2000.25),
+(1, 'TrustFundBaby', 100),
+(2, 'ScroogeMcHuman', 0),
 (3, 'FrugalNotCheap', 1500.80),
 (4, 'RonaldStump', 800.97),
 (5, 'MashFetchum', 980.59),
@@ -9,11 +9,11 @@ INSERT INTO users (id, username, total_balance) VALUES
 
 --insert example data into cards table
 INSERT INTO cards (id, user_id, account_number, credit_limit, balance, apr, start_date, refresh_date, card_name) VALUES
-(1, 1, 123456, 5000.00, 200, 10.7, '10-02-2025', 1, 'GOLD'),
+(1, 1, 123456, 5000.00, 100, 10.7, '10-02-2025', 1, 'GOLD'),
 (2, 2, 098789, 15000.00, 0, 15.1, '14-07-2025', 1, 'PLATINUM'),
-(3, 3, 300355, 25000.00, 0, 18.0, '25-06-2025', 1, 'BLACK'),
-(4, 4, 503935, 15000.00, 0, 15.1, '02-04-2025', 1, 'PLATINUM'),
-(5, 5, 484820, 5000.00, 0, 10.7, '14-04-2024', 1, 'GOLD'),
+(3, 3, 300355, 25000.00, 1500.80, 18.0, '25-06-2025', 1, 'BLACK'),
+(4, 4, 503935, 15000.00, 800.97, 15.1, '02-04-2025', 1, 'PLATINUM'),
+(5, 5, 484820, 5000.00, 900.59, 10.7, '14-04-2024', 1, 'GOLD'),
 (6, 6, 999999, 25000.00, 0, 18.0, '05-11-2023',1, 'BLACK');
 
 
@@ -22,9 +22,11 @@ INSERT INTO transactions (id, senders_account_number, senders_username, senders_
 recipient_account_number, amount, description, transaction_date) VALUES
 (1, 123456, 'TrustFundBaby', 1, 'ScroogeMcHuman', 098789, 380.99, 'Money for Scrooge', '18-06-2025'),
 (2, 484820, 'MashFetchum', 5, 'FrugalNotCheap', 998877, 60.00, 'Buying a Greatball', '17-08-2025'),
-(3, 503935, 'RonaldStump', 4, 'TrustFundBaby', 135790, 1000.67, 'Small donation', '07-07-2025'),
+(3, 503935, 'RonaldStump', 4, 'TrustFundBaby', 135790, 380.99, 'Small donation', '07-07-2025'),
 (4, 503935, 'FrugalNotCheap', 3, 'ScroogeMcHuman', 098789, 450, 'haircut', '15-06-2025'),
 (5, 098789, 'ScroogeMcHuman', 2, 'MashFetchum', 484820, 50, 'Paint work', '04-03-2025');
+
+
 
 --insert example data into users_cards
 INSERT INTO users_cards (user_id, card_id) VALUES

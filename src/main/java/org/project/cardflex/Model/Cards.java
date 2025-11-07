@@ -7,7 +7,7 @@ public class Cards {
     private float creditLimit;
     private float APR;
     private String startDate;
-    private String refreshDate;
+    private int refreshDate;
     private String cardName;
     private float balance;
 
@@ -17,8 +17,10 @@ public class Cards {
 
     }
 
+
+
     // --------------- Constructors for cards -------------- //
-    public Cards(int id, int userId, int accountNumber, float creditLimit, float APR, String startDate, String refreshDate, String cardName) {
+    public Cards(int id, int userId, int accountNumber, float creditLimit, float APR, String startDate, int refreshDate, String cardName) {
         this.id = id;
         this.userId = userId;
         this.accountNumber = accountNumber;
@@ -38,7 +40,7 @@ public class Cards {
         this.balance = balance;
     }
 
-    public Cards(int userId, int accountNumber, float creditLimit, float APR, String cardName, String startDate, String refreshDate, float balance) {
+    public Cards(int userId, int accountNumber, float creditLimit, float APR, String cardName, String startDate, int refreshDate, float balance) {
         this.userId = userId;
         this.accountNumber = accountNumber;
         this.creditLimit = creditLimit;
@@ -49,10 +51,33 @@ public class Cards {
         this.balance = balance;
     }
 
+    public Cards(int id, int userId, int accountNumber, float creditLimit, float APR, String startDate, int refreshDate, String cardName, float balance) {
+        this.id = id;
+        this.userId = userId;
+        this.accountNumber = accountNumber;
+        this.creditLimit = creditLimit;
+        this.APR = APR;
+        this.startDate = startDate;
+        this.refreshDate = refreshDate;
+        this.cardName = cardName;
+        this.balance = balance;
+    }
 
     // ------------- Getters And Setters ------------------- //
     public Cards(int userId) {
         this.userId = userId;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setBalance(float balance) {
+        this.balance = balance;
     }
 
     public int getAccountNumber() {
@@ -87,11 +112,11 @@ public class Cards {
         this.startDate = startDate;
     }
 
-    public String getRefreshDate() {
+    public int getRefreshDate() {
         return refreshDate;
     }
 
-    public void setRefreshDate(String refreshDate) {
+    public void setRefreshDate(int refreshDate) {
         this.refreshDate = refreshDate;
     }
 
@@ -117,6 +142,21 @@ public class Cards {
 
     public void setBalance(int balance) {
         this.balance = balance;
+    }
+
+    @Override
+    public String toString() {
+        return "Cards{" +
+                "id=" + id +
+                ", userId=" + userId +
+                ", accountNumber=" + accountNumber +
+                ", creditLimit=" + creditLimit +
+                ", APR=" + APR +
+                ", startDate='" + startDate + '\'' +
+                ", refreshDate='" + refreshDate + '\'' +
+                ", cardName='" + cardName + '\'' +
+                ", balance=" + balance +
+                '}';
     }
 }
 

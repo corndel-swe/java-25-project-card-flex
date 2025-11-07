@@ -8,38 +8,72 @@
 </head>
 
 <body>
-    <section class="heading">
+<section class="heading">
 
-        <h1 style="justify-self: center;">CardFlex Homepage</h1>
-        <button style="align-self: flex-start;">Sign out</button>
-    </section>
-    <section class="container">
-        <div class="balance-row">
-            <div>
-                <h3>Credit Cards</h3>
-                <p>You have X amount of credit cards</p>
-            </div>
-            <div class="balance">
-                Total balance: £xxxx
-            </div>
+    <h1 style="justify-self: center;">CardFlex Homepage</h1>
+    <button style="align-self: flex-start;"><a th:href="@{/}">Sign out</a></button>
+</section>
+<section class="container">
+    <div class="balance-row">
+        <div>
+            <h3>Credit Cards</h3>
+            <p>
+                You currently manage <span th:text="${#lists.size(ownedCards)}" class="highlight-count">5</span>
+                credit cards, with
+                <span th:text="${#lists.size(availableCards)}" class="highlight-count">3</span>
+                new opportunities available.
+            </p>
 
-            <button>Add a new card</button>
         </div>
-        <article class="card-row" th:each="card: ${cards}">
+        <div class="balance">
+            Total balance: <span th:text="${'£' + totalBalance}"></span>
+        </div>
+
+    </div>
+
+    <div th:if="${!#lists.isEmpty(ownedCards)}">
+        <h3>Owned Cards</h3>
+
+        <article class="card-row" th:each="card: ${ownedCards}">
             <div class="card">
-                <p th:text="${card.name}"></p>
-                <p th:text="${card.apr}"></p>
+                <p th:text="${card.getCardName()}"></p>
+                <p> APR = <span th:text="${card.apr}"></span> % </p>
+                <p> Balance = £<span th:text="${card.getBalance()}"> </span></p>
             </div>
+
             <div class="card-buttons">
-                <!-- thmyleaf href syntax reference -->
-                <!-- <button><a th::href="@{statement/${card.id}}">View statements</a></button> -->
-                 <button><a>View</a></button>
-                <button>View transactions</button>
-                <button>Cancel cards</button>
+                <button><a th:href="@{/cardSummary/{cardId}(cardId=${card.getId()})}">View Card Summary</a></button>
+
+                <form th:action="@{/cards/{cardId}/delete(cardId=${card.id})}" method="post">
+
+                    <button type="submit" class="delete-button">
+                        Cancel card
+                    </button>
+                </form>
+
             </div>
         </article>
+    </div>
 
-    </section>
+
+    <div th:if="${!#lists.isEmpty(availableCards)}">
+        <h3>Available Cards</h3>
+
+        <article class="card-row" th:each="card: ${availableCards}">
+            <div class="card">
+                <p th:text="${card.name}"></p>
+                <p> APR = <span th:text="${card.apr}"></span> % </p>
+                <p> Credit Limit = £<span th:text="${card.creditLimit}"></span></p>
+            </div>
+
+            <form th:action="@{/apply/{cardName}(cardName=${card.name})}" method="post">
+                <button type="submit">Apply</button>
+            </form>
+
+        </article>
+    </div>
+
+</section>
 </body>
 
 </html>

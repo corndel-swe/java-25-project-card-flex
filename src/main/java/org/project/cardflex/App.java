@@ -1,19 +1,24 @@
 package org.project.cardflex;
 
 import io.javalin.Javalin;
+import io.javalin.http.staticfiles.Location;
 import io.javalin.rendering.template.JavalinThymeleaf;
+import org.jetbrains.annotations.NotNull;
+import org.project.cardflex.Model.Cards;
 import org.project.cardflex.Model.User;
+import org.project.cardflex.Repository.CardRepository;
 import org.project.cardflex.Repository.TransactionsRepository;
 import org.project.cardflex.Repository.UserRepository;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.sql.SQLException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class App {
+    public static final String USER_ID = "user-id";
+    public static final String ERROR = "error";
     private final Javalin app;
 
     public static void main(String[] args) {
@@ -27,37 +32,14 @@ public class App {
 
     public App() {
 
-
-        List<Map<String, String>> creditCards = new ArrayList<>();
-
-        // Card 1
-        Map<String, String> card1 = new HashMap<>();
-        card1.put("name", "Gold card");
-        card1.put("apr", "15.99");
-        card1.put("creditLimit", "10000");
-        creditCards.add(card1);
-
-        // Card 2
-        Map<String, String> card2 = new HashMap<>();
-        card2.put("name", "Black card");
-        card2.put("apr", "18.49");
-        card2.put("creditLimit", "7500");
-        creditCards.add(card2);
-
-        // Card 3
-        Map<String, String> card3 = new HashMap<>();
-        card3.put("name", "Platinum Card");
-        card3.put("apr", "20.99");
-        card3.put("creditLimit", "15000");
-        creditCards.add(card3);
-
-        // Example: sending to frontend or printing
-        System.out.println(creditCards);// Map<String, String> testData = new HashMap<String, String>();
-        // testData.put("name", "blue");
+        List<Map<String, String>> creditCards = getCreditCards();
 
         app = Javalin.create(
                 config -> {
-                    // config.staticFiles.add("/public", Location.CLASSPATH);
+                    // FOR STYLING
+                    config.staticFiles.add("src/main/resources/public", Location.EXTERNAL);
+
+//                     config.staticFiles.add("/public", Location.CLASSPATH);
 
                     var resolver = new ClassLoaderTemplateResolver();
                     resolver.setPrefix("/templates/");
@@ -76,38 +58,119 @@ public class App {
             var transactions = TransactionsRepository.findById(id);
         });
 
-        app.get("{useId}/dashboard", ctx -> {
-            ctx.render("/dashboard.html", Map.of("cards", creditCards));
+        app.get("/dashboard", ctx -> {
+            Integer id = ctx.sessionAttribute(USER_ID);
+
+            if (id == null) {
+                ctx.redirect("/");
+                return;
+            }
+
+            float totalBalance = UserRepository.findTotalBalance(id);
+
+            List<Cards> ownedCards = UserRepository.getAllCardsByUserId(id);
+
+            // Set of owned CardTypes for filtering available
+            Set<String> ownedType = ownedCards.stream().map(Cards::getCardName).collect(Collectors.toSet());
+
+            // Cards that are available to the User to apply for
+            List<Map<String, String>> availableCards = creditCards.stream().
+                    filter(card -> !ownedType.contains(card.get("name")))
+                    .toList();
+
+            ctx.render("/dashboard.html", Map.of("ownedCards", ownedCards,
+                    "availableCards", availableCards,
+                    "totalBalance", totalBalance));
         });
 
         app.get("/", ctx -> {
+            ctx.sessionAttribute(USER_ID, null);
+            String error = ctx.sessionAttribute(ERROR);
 
-            ctx.render("/login.html");
+            if (error == null) {
+                ctx.render("/login.html");
+            } else {
+                ctx.sessionAttribute(ERROR, null);
+                ctx.render("/login.html", Map.of("error", error));
+            }
+
         });
 
         app.get("/register", ctx -> {
             ctx.render("/register.html");
         });
 
-//       app.post(
-//               "/username",
-//               ctx -> {
-//                   var username = UserRepository.checkUsername("TrustFundBaby");
-//                   System.out.println();
-//                   ctx.json(username);
-//               }
-//       );
-
         app.post("/", ctx -> {
             String username = ctx.formParamAsClass("login", String.class).get();
             User user = UserRepository.checkUsername(username);
 
             if (user != null) {
-                ctx.redirect(String.format("%d/dashboard", user.getId()));
+                ctx.sessionAttribute(USER_ID, user.getId());
+                ctx.redirect("/dashboard");
             } else {
-                ctx.render("/login.html", Map.of("error", "Invalid username"));
+                ctx.sessionAttribute(ERROR, "Invalid username");
+                ctx.redirect("/");
             }
         });
+
+        app.post("/apply/{cardName}", ctx -> {
+            Integer id = ctx.sessionAttribute(USER_ID);
+            String cardName = ctx.pathParam("cardName");
+
+            Set<String> cardTypes = new HashSet<>(List.of("BLACK", "PLATINUM", "GOLD"));
+
+            if (cardTypes.contains(cardName) && id != null) {
+                CardRepository.newCreditCard(id, cardName);
+            }
+
+            ctx.redirect("/dashboard");
+        });
+
+
+        app.post("/cards/{cardId}/delete", ctx -> {
+            Integer id = ctx.sessionAttribute(USER_ID);
+
+            if (id == null) {
+                ctx.redirect("/");
+                return;
+            }
+
+            int cardId = Integer.parseInt(ctx.pathParam("cardId"));
+            try {
+                CardRepository.deleteCard(cardId);
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+
+            ctx.redirect("/dashboard");
+        });
+    }
+
+    @NotNull
+    private static List<Map<String, String>> getCreditCards() {
+        List<Map<String, String>> creditCards = new ArrayList<>();
+
+        // Card 1
+        Map<String, String> card1 = new HashMap<>();
+        card1.put("name", "GOLD");
+        card1.put("apr", "15.99");
+        card1.put("creditLimit", "10000");
+        creditCards.add(card1);
+
+        // Card 2
+        Map<String, String> card2 = new HashMap<>();
+        card2.put("name", "BLACK");
+        card2.put("apr", "18.49");
+        card2.put("creditLimit", "7500");
+        creditCards.add(card2);
+
+        // Card 3
+        Map<String, String> card3 = new HashMap<>();
+        card3.put("name", "PLATINUM");
+        card3.put("apr", "20.99");
+        card3.put("creditLimit", "15000");
+        creditCards.add(card3);
+        return creditCards;
     }
 
 
