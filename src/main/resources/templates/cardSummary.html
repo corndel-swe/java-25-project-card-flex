@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Card summary</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+
+<nav class="navigation">
+    <h1 class="navigation-title background-gradient"><a th:href="@{/dashboard}">CardFlex</a></h1>
+    <button class="button navigation-button"><a th:href="@{/}">Sign out</a></button>
+</nav>
+
+<main>
+
+
+    <h3>CardFlex <span th:text="${card.getCardName()}"></span> Page</h3>
+
+    <section class="section-container">
+        <div class="info-row">
+            <div class="label-value">
+                <p>Balance</p>
+                <p th:text="${card.getBalance()}"></p>
+            </div>
+
+
+            <div class="label-value">
+                <p>Available</p>
+                <!-- calculate avaiable balance below with creditLimit - balance -->
+                <p th:text="${available}"></p>
+
+            </div>
+
+        </div>
+
+
+        <div class="transactions-section">
+            <p class="transaction-header">Your Transactions</p>
+            <ul>
+                <div class="transaction-keys">
+                    <p>S. Acc. number</p>
+                    <p>S. name</p>
+                    <p>R. Acc. number</p>
+                    <p>R. name</p>
+                    <p>Amount</p>
+                    <p>Date</p>
+                </div>
+                <li class="transaction" th:each="transaction : ${transactions}">
+                    <p th:text="${transaction.sendersAccNum}"></p>
+                    <p th:text="${transaction.sendersUsername}"></p>
+                    <p th:text="${transaction.recipientAccNum}"></p>
+                    <p th:text="${transaction.recipientUsername}"></p>
+                    <p th:text="${transaction.amount}"></p>
+                    <p th:text="${transaction.transactionDate}"></p>
+
+                </li>
+            </ul>
+        </div>
+    </section>
+
+</main>
+
+</body>
+
+</html>
+
+
+<style>
+    h3 {
+        font-size: 32px;
+        font-weight: 600;
+        line-height: 150%;
+    }
+
+
+    main {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+    }
+
+    .transaction-header {
+        font-size: 24px;
+        font-weight: 600;
+        max-width: fit-content;
+        align-self: center;
+
+    }
+
+    .section-container {
+        display: flex;
+        flex-direction: column;
+
+        align-items: center;
+
+        background-color: #cae2f7;
+        border: 7px;
+        border-style: solid;
+        border-radius: 4px;
+        border-color: #0b2574;
+        min-width: fit-content;
+        padding-left: 4px;
+        padding-right: 4px;
+        width: 70vw;
+
+    }
+
+    .transactions-section {
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        min-width: 700px;
+
+    }
+
+    .transaction-keys {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+
+    .transaction {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+
+    .basic-info {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .info-row {
+        display: flex;
+        flex-direction: row;
+
+    }
+
+    .label-value {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 35px;
+        padding: 7px 11px;
+        border: 4px;
+        border-style: solid;
+        border-radius: 8px;
+        border-color: #0b2574;
+    }
+
+    button {
+        border: 2px;
+        border-color: black;
+        padding: 4px 6px;
+        border-style: solid;
+        border-radius: 10px;
+        font-size: 20px;
+        font-weight: 500;
+        background-color: #00175A;
+        color: white;
+        text-decoration: none;
+    }
+
+    a {
+        width: 100%;
+        height: 100%;
+        text-decoration: none;
+    }
+</style>
