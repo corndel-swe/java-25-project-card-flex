@@ -48,7 +48,7 @@ public class UserRepository {
 
             try (var rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    var cardId = rs.getInt("card_id");
+                    var cardId = rs.getInt("id");
                     var userId = rs.getInt("user_id");
                     var accountNumber = rs.getInt("account_number");
                     var cardName = rs.getString("card_name");
@@ -57,8 +57,6 @@ public class UserRepository {
                     var startDate = rs.getString("start_date");
                     var refreshDate = rs.getInt("refresh_date");
                     var apr = rs.getFloat("apr");
-
-
 
                     cards.add(new Cards(cardId, userId, accountNumber, creditLimit, apr, startDate, refreshDate, cardName, cardBalance ));
                 }
@@ -90,13 +88,13 @@ public class UserRepository {
 
     }
 
-    public static void main(String[] args) {
-        try {
-            System.out.println(getAllCardsByUserId(1));
-        } catch (SQLException e) {
-            System.out.println("uh oh");
-            throw new RuntimeException(e);
-        }
-    }
+//    public static void main(String[] args) {
+//        try {
+//            System.out.println(getAllCardsByUserId(1));
+//        } catch (SQLException e) {
+//            System.out.println("uh oh");
+//            throw new RuntimeException(e);
+//        }
+//    }
 
 }
