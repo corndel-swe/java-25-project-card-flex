@@ -137,13 +137,9 @@ public class CardRepository {
         var currentDate = formatpattern.format(date);
 
 
-        //apr 20
-        //apr to apply 0.2 + 1
-        //apr // 100 + 1
-
         float aprToUse = apr / 100;
 
-        float interest = balance * aprToUse;
+        float interest = balance * (aprToUse / 12);
         DecimalFormat df = new DecimalFormat();
         df.setMaximumFractionDigits(2);
         interest = Float.parseFloat((df.format(interest)));
@@ -153,7 +149,6 @@ public class CardRepository {
         var recipientsAccNum = "Select account_number FROM cards WHERE id = " + id;
 
 
-        //var query = recipientsAccNum + ";" + recipientsUserID + ";" + recipientsUserName;
         int RecipientAN = 0;
         int RecipientUserID = 0;
         try (var con = DB.getConnection();
@@ -196,16 +191,7 @@ public class CardRepository {
     }
 
 
-    /// / Testing the method
-//    public static void main(String[] args) throws SQLException {
-//        var Cardid = 1;
-//        System.out.println(viewCardBalance(Cardid));
-//        System.out.println(20.00 / 100.00 + 1 );
-//        System.out.println(viewAPR(Cardid));
-//        applyAPR(Cardid);
-//    }
-//
-//}
+
 
     // create method to delete card if there's no remaining balance to be paid off on the card
     public static void deleteCard(int cardId) throws SQLException {

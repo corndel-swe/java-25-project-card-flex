@@ -88,13 +88,6 @@ public class UserRepository {
 
     }
 
-//    public static void main(String[] args) {
-//        try {
-//            System.out.println(getAllCardsByUserId(1));
-//        } catch (SQLException e) {
-//            System.out.println("uh oh");
-//            throw new RuntimeException(e);
-//        }
-//    }
+
 
 }
