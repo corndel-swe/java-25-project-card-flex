@@ -3,12 +3,13 @@ package org.project.cardflex;
 import io.javalin.Javalin;
 import io.javalin.http.staticfiles.Location;
 import io.javalin.rendering.template.JavalinThymeleaf;
-import org.jetbrains.annotations.NotNull;
 import org.project.cardflex.Model.Cards;
 import org.project.cardflex.Model.User;
 import org.project.cardflex.Repository.CardRepository;
 import org.project.cardflex.Repository.TransactionsRepository;
 import org.project.cardflex.Repository.UserRepository;
+import org.project.cardflex.db.DB;
+import org.project.cardflex.db.DBConnection;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
@@ -20,6 +21,10 @@ public class App {
     public static final String USER_ID = "user-id";
     public static final String ERROR = "error";
     private final Javalin app;
+    private final List<Map<String, String>> creditCards = getCreditCards();
+    private final UserRepository userRepository = getUserRepository();
+    private final CardRepository cardRepository = getCardRepository();
+    private final TransactionsRepository transactionsRepository = getTransactionRepository();
 
     public static void main(String[] args) {
         Javalin app = new App().javalinApp();
@@ -31,15 +36,10 @@ public class App {
     }
 
     public App() {
-
-        List<Map<String, String>> creditCards = getCreditCards();
-
         app = Javalin.create(
                 config -> {
-                    // FOR STYLING
-                    config.staticFiles.add("src/main/resources/public", Location.EXTERNAL);
 
-//                     config.staticFiles.add("/public", Location.CLASSPATH);
+                    config.staticFiles.add("/public", Location.CLASSPATH);
 
                     var resolver = new ClassLoaderTemplateResolver();
                     resolver.setPrefix("/templates/");
@@ -54,8 +54,8 @@ public class App {
 
         app.get("/cardSummary/{cardId}/", ctx -> {
             int cardId = Integer.parseInt(ctx.pathParam("cardId"));
-            var transactions = TransactionsRepository.findById(cardId);
-            var card = CardRepository.getCardById(cardId);
+            var transactions = transactionsRepository.findById(cardId);
+            var card = cardRepository.getCardById(cardId);
 
             var available = card.getCreditLimit() - card.getBalance();
             ctx.render("/cardSummary.html", Map.of("cardId", cardId, "transactions", transactions, "card", card, "available", available));
@@ -69,9 +69,9 @@ public class App {
                 return;
             }
 
-            float totalBalance = UserRepository.findTotalBalance(id);
+            float totalBalance = userRepository.findTotalBalance(id);
 
-            List<Cards> ownedCards = UserRepository.getAllCardsByUserId(id);
+            List<Cards> ownedCards = userRepository.getAllCardsByUserId(id);
 
             // Set of owned CardTypes for filtering available
             Set<String> ownedType = ownedCards.stream().map(Cards::getCardName).collect(Collectors.toSet());
@@ -105,7 +105,7 @@ public class App {
 
         app.post("/", ctx -> {
             String username = ctx.formParamAsClass("login", String.class).get();
-            User user = UserRepository.checkUsername(username);
+            User user = userRepository.checkUsername(username);
 
             if (user != null) {
                 ctx.sessionAttribute(USER_ID, user.getId());
@@ -123,7 +123,7 @@ public class App {
             Set<String> cardTypes = new HashSet<>(List.of("BLACK", "PLATINUM", "GOLD"));
 
             if (cardTypes.contains(cardName) && id != null) {
-                CardRepository.newCreditCard(id, cardName);
+                cardRepository.newCreditCard(id, cardName);
             }
 
             ctx.redirect("/dashboard");
@@ -140,7 +140,7 @@ public class App {
 
             int cardId = Integer.parseInt(ctx.pathParam("cardId"));
             try {
-                CardRepository.deleteCard(cardId);
+                cardRepository.deleteCard(cardId);
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
             }
@@ -149,13 +149,28 @@ public class App {
         });
         app.get("/test/interest/{cardId}", ctx -> {
             var id = Integer.parseInt(ctx.pathParam("cardId"));
-            CardRepository.applyAPR(id);
+            cardRepository.applyAPR(id);
             ctx.redirect("/dashboard");
             //this exists to demonstrate applying interest
         });
     }
 
-    @NotNull
+    private TransactionsRepository getTransactionRepository() {
+        return new TransactionsRepository(getDBConnection());
+    }
+
+    private CardRepository getCardRepository() {
+        return new CardRepository(getDBConnection(), getTransactionRepository());
+    }
+
+    private UserRepository getUserRepository() {
+        return new UserRepository(getDBConnection());
+    }
+
+    private DBConnection getDBConnection() {
+        return new DB();
+    }
+
     private static List<Map<String, String>> getCreditCards() {
         List<Map<String, String>> creditCards = new ArrayList<>();
 

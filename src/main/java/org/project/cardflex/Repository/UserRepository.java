@@ -1,8 +1,9 @@
 package org.project.cardflex.Repository;
 
-import org.project.cardflex.DB;
+
 import org.project.cardflex.Model.Cards;
 import org.project.cardflex.Model.User;
+import org.project.cardflex.db.DBConnection;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -10,11 +11,17 @@ import java.util.List;
 
 public class UserRepository {
 
+    private final DBConnection dbConnection;
+
+    public UserRepository(DBConnection dbConnection) {
+        this.dbConnection = dbConnection;
+    }
+
     // This method will check the User exists in the database, therefore returning a User to login //
-    public static User checkUsername(String username) throws SQLException {
+    public User checkUsername(String username) throws SQLException {
         var query = "SELECT * FROM users WHERE username = ? ";
 
-        try (var con = DB.getConnection();
+        try (var con = dbConnection.getConnection();
              var stmt = con.prepareStatement(query)) {
 
             stmt.setString(1, username);
@@ -34,13 +41,13 @@ public class UserRepository {
     }
 
     //returns a list of all cardids relating to a user EB
-    public static List<Cards> getAllCardsByUserId(int user_id) throws SQLException {
+    public List<Cards> getAllCardsByUserId(int user_id) throws SQLException {
 
         var query = "SELECT users_cards.card_id, cards.* " +
                 "FROM users_cards INNER JOIN cards ON cards.user_id = users_cards.user_id " +
                 "WHERE users_cards.user_id = ?";
 
-        try (var con = DB.getConnection();
+        try (var con = dbConnection.getConnection();
              var stmt = con.prepareStatement(query)) {
 
             stmt.setInt(1, user_id);
@@ -68,10 +75,10 @@ public class UserRepository {
 
 
     //Method will find the users total balance sourced from Users table
-    public static float findTotalBalance(int userId) throws SQLException {
+    public float findTotalBalance(int userId) throws SQLException {
         var query = "SELECT total_balance from users where id = ?";
 
-        try (var con = DB.getConnection();
+        try (var con = dbConnection.getConnection();
              var stmt = con.prepareStatement(query)) {
 
             stmt.setInt(1, userId);

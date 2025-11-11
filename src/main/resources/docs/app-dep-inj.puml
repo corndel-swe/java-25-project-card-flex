@@ -1,0 +1,44 @@
+@startuml
+
+class User  {
+    - id: int
+    - username: String
+    - totalBalance: float
+}
+
+class Cards  {
+    - cardId: int
+    - userId: int
+    // ... other card attributes ...
+}
+
+interface DBConnection {
+    + getConnection(): Connection
+}
+
+class UserRepository {
+    - dbConnection: DBConnection
+    + UserRepository(DBConnection dbConnection)
+    --
+    + checkUsername(String): User
+    + getAllCardsByUserId(int): List<Cards>
+    + findTotalBalance(int): float
+}
+
+class DB implements DBConnection {
+    + getConnection(): Connection
+}
+
+class TestDB implements DBConnection {
+    + getConnection(): Connection
+}
+
+
+' --- Relationships ---
+
+DBConnection <-- UserRepository : uses/injects
+
+UserRepository ..> User : returns
+UserRepository ..> Cards : returns
+
+@enduml

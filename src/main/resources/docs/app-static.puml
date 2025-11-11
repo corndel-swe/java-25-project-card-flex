@@ -1,0 +1,33 @@
+@startuml
+
+class User {
+    - id: int
+    - username: String
+    - totalBalance: float
+}
+
+class Cards {
+    - cardId: int
+    - userId: int
+    // ... other card attributes ...
+}
+
+class UserRepository {
+    + {static} checkUsername(String): User
+    + {static} getAllCardsByUserId(int): List<Cards>
+    + {static} findTotalBalance(int): float
+}
+
+class DB {
+    + {static} getConnection(): Connection
+}
+
+
+' --- Relationships ---
+
+UserRepository ..> User : returns
+UserRepository ..> Cards : returns
+
+DB <.. UserRepository : uses (static call)
+
+@enduml

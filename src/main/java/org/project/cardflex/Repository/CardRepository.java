@@ -1,9 +1,9 @@
 package org.project.cardflex.Repository;
 
-import org.project.cardflex.DB;
 import org.project.cardflex.Model.Cards;
 import org.project.cardflex.Model.Statement;
 import org.project.cardflex.Model.Transactions;
+import org.project.cardflex.db.DBConnection;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -18,10 +18,18 @@ import java.util.Random;
 
 public class CardRepository {
 
+    private final DBConnection dbConnection;
+    private final TransactionsRepository transactionsRepository;
+
+    public CardRepository(DBConnection dbConnection, TransactionsRepository transactionsRepository) {
+        this.dbConnection = dbConnection;
+        this.transactionsRepository = transactionsRepository;
+    }
+
     //   Display Credit Card Type to Users
-    public static void newCreditCard(int userId, String cardName) throws SQLException {
+    public void newCreditCard(int userId, String cardName) throws SQLException {
         var query = "INSERT INTO cards (account_number, credit_limit, apr, refresh_date, card_name, balance, user_id ) VALUES (?, ?,?,?,?,?,?)";
-        try (var con = DB.getConnection();
+        try (var con = dbConnection.getConnection();
              var stmt = con.prepareStatement(query)) {
             Random r = new Random();
             float APR = 0;
@@ -52,9 +60,9 @@ public class CardRepository {
     }
 
     // Locating Existing Cards Based off User ID
-    public static List<Cards> findCardsByUserID(int userId) throws SQLException {
+    public List<Cards> findCardsByUserID(int userId) throws SQLException {
         var query = "SELECT * FROM Cards WHERE user_id = ?";
-        try (var con = DB.getConnection();
+        try (var con = dbConnection.getConnection();
              var stmt = con.prepareStatement(query)) {
             stmt.setInt(1, userId);
             try (var rs = stmt.executeQuery()) {
@@ -71,16 +79,15 @@ public class CardRepository {
                     cards.add(new Cards(userId, accountNumber, creditLimit, APR, cardName, startDate, refreshDate, balance));
                 }
                 return cards;
-
             }
         }
     }
 
 
-    public static Float viewCardBalance(int id) throws SQLException {
+    public Float viewCardBalance(int id) throws SQLException {
 
         var query = "SELECT balance FROM cards WHERE id = ?";
-        try (var con = DB.getConnection();
+        try (var con = dbConnection.getConnection();
              var stmt = con.prepareStatement(query)) {
 
             stmt.setInt(1, id);
@@ -91,30 +98,23 @@ public class CardRepository {
                 return balance;
             }
         }
-
     }
 
     //this will update the Card ids balance to a definable amount
-    public static void hardUpdateBalance(float balance, int id) throws SQLException {
+    public void hardUpdateBalance(float balance, int id) throws SQLException {
         var query = "UPDATE cards SET balance = ROUND(?,2) WHERE id = ?";
 
-        try (var con = DB.getConnection();
+        try (var con = dbConnection.getConnection();
              var stmt = con.prepareStatement(query);) {
             stmt.setFloat(1, balance);
             stmt.setInt(2, id);
             stmt.executeUpdate();
-
-
         }
-
     }
 
-    ;
-
-
-    public static Float viewAPR(int id) throws SQLException {
+    public Float viewAPR(int id) throws SQLException {
         var query = "SELECT apr FROM cards WHERE id = ?";
-        try (var con = DB.getConnection();
+        try (var con = dbConnection.getConnection();
              var stmt = con.prepareStatement(query)) {
 
             stmt.setInt(1, id);
@@ -127,7 +127,7 @@ public class CardRepository {
         }
     }
 
-    public static void applyAPR(int id) throws SQLException {
+    public void applyAPR(int id) throws SQLException {
 
         float balance = viewCardBalance(id); //balance
         float apr = viewAPR(id); //apr
@@ -151,7 +151,7 @@ public class CardRepository {
 
         int RecipientAN = 0;
         int RecipientUserID = 0;
-        try (var con = DB.getConnection();
+        try (var con = dbConnection.getConnection();
              var stmt = con.createStatement();
              var rs = stmt.executeQuery(recipientsAccNum)) {
             System.out.println("Executed query 1");
@@ -161,7 +161,7 @@ public class CardRepository {
 
         var recipientsUserID = "SELECT user_id FROM cards WHERE id = " + id;
 
-        try (var con2 = DB.getConnection();
+        try (var con2 = dbConnection.getConnection();
              var stmt2 = con2.createStatement();
              var rs2 = stmt2.executeQuery(recipientsUserID)) {
             System.out.println("Executed query 2");
@@ -174,7 +174,7 @@ public class CardRepository {
         var recipientsUserName = "Select username FROM users WHERE id = " + RecipientUserID;
         Transactions transactions = null;
         try (
-                var con3 = DB.getConnection();
+                var con3 = dbConnection.getConnection();
                 var stmt3 = con3.createStatement();
                 var rs3 = stmt3.executeQuery(recipientsUserName)) {
             System.out.println("Executed query 3");
@@ -186,28 +186,29 @@ public class CardRepository {
 
         }
 
-        TransactionsRepository.addTransaction(transactions);
+        transactionsRepository.addTransaction(transactions);
         hardUpdateBalance((interest + balance), id);
     }
 
 
     // create method to delete card if there's no remaining balance to be paid off on the card
-    public static void deleteCard(int cardId) throws SQLException {
+    public void deleteCard(int cardId) throws SQLException {
 
         var deleteQuery = "DELETE FROM cards WHERE id = ? AND balance = 0.00";
 
-        try (var connection = DB.getConnection();
+        try (var connection = dbConnection.getConnection();
              var statement = connection.prepareStatement(deleteQuery)) {
             statement.setInt(1, cardId);
             statement.executeUpdate();
         }
 
     }
-    public static List<Statement> buildCardStatement(int id) throws SQLException {
+
+    public List<Statement> buildCardStatement(int id) throws SQLException {
         var query = "SELECT cards.account_number, cards.balance, cards.credit_limit FROM cards WHERE cards.id = ?";
         List<Statement> statement = new ArrayList<>();
         updateBalance(id);
-        try (Connection con = DB.getConnection();
+        try (Connection con = dbConnection.getConnection();
              PreparedStatement preparedStatement = con.prepareStatement(query)) {
 
             preparedStatement.setInt(1, id);
@@ -222,25 +223,24 @@ public class CardRepository {
                 }
                 return statement;
             }
-
         }
     }
 
     //Call method after any addition of transactions or before any use of balance
-    public static void updateBalance(int id) throws SQLException{
+    public void updateBalance(int id) throws SQLException {
         var query = "UPDATE cards SET balance = (SELECT SUM(amount) FROM transactions INNER JOIN cards_transactions ON transactions.id = cards_transactions.transactions_id WHERE cards.id = ?) WHERE cards.id = ?";
-        try (Connection con = DB.getConnection();
+        try (Connection con = dbConnection.getConnection();
              PreparedStatement preparedStatement = con.prepareStatement(query)) {
-            preparedStatement.setInt(1,id);
-            preparedStatement.setInt(2,id);
+            preparedStatement.setInt(1, id);
+            preparedStatement.setInt(2, id);
             preparedStatement.executeUpdate();
         }
     }
 
-    public static Cards getCardById(int id) throws SQLException {
+    public Cards getCardById(int id) throws SQLException {
         var query = "SELECT * FROM cards WHERE id = ? ";
 
-        try (var con = DB.getConnection();
+        try (var con = dbConnection.getConnection();
              var stmt = con.prepareStatement(query)) {
 
             stmt.setInt(1, id);
@@ -264,7 +264,6 @@ public class CardRepository {
             }
         }
     }
-
 }
 
 

@@ -1,7 +1,8 @@
 package org.project.cardflex.Repository;
 
-import org.project.cardflex.DB;
+import org.project.cardflex.db.DB;
 import org.project.cardflex.Model.Transactions;
+import org.project.cardflex.db.DBConnection;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,7 +13,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TransactionsRepository {
-    public static List<Transactions> findById (int id) throws SQLException {
+
+    private final DBConnection DB;
+
+    public TransactionsRepository(DBConnection DB) {
+        this.DB = DB;
+    }
+
+    public List<Transactions> findById (int id) throws SQLException {
         var query = "SELECT * FROM transactions INNER JOIN cards_transactions ON transactions.id = cards_transactions.transactions_id INNER JOIN cards on cards.id = cards_transactions.card_id WHERE card_id = ? ORDER BY transaction_date DESC";
         try (Connection con = DB.getConnection();
              PreparedStatement preparedStatement = con.prepareStatement(query)) {
@@ -42,7 +50,7 @@ public class TransactionsRepository {
         }
     }
 
-    public static List<Transactions> findMonthlyById (int id) throws SQLException {
+    public List<Transactions> findMonthlyById (int id) throws SQLException {
         var query = "SELECT * FROM transactions INNER JOIN cards_transactions ON transactions.id = cards_transactions.transactions_id INNER JOIN cards ON cards.id = cards_transactions.card_id WHERE card_id = ? AND transaction_date BETWEEN date('now', '-28 days') AND date('now') ORDER BY transaction_date DESC;";
         try (Connection con = DB.getConnection();
              PreparedStatement preparedStatement = con.prepareStatement(query)) {
@@ -71,7 +79,7 @@ public class TransactionsRepository {
 
         }
     }
-    public static void addTransaction (Transactions transaction) throws SQLException {
+    public void addTransaction (Transactions transaction) throws SQLException {
         var query = "INSERT INTO transactions (senders_card_id, senders_username, senders_account_number, recipient_username, recipient_account_number, amount, description, transaction_date)  VALUES (?,?,?,?,?,ROUND(?,2),?,?) ";
         try ( var con = DB.getConnection();
               var stmt = con.prepareStatement(query)){
@@ -95,8 +103,4 @@ public class TransactionsRepository {
 
     }
 
-    // Test adding Transaction
-    public static void main(String[] args) throws SQLException {
-        TransactionsRepository.addTransaction(new Transactions(1, 1,"Cardflex",  123456,"user", 125, "Test transaction", "01-01-0000"));
-    }
 }
