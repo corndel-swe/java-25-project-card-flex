@@ -27,41 +27,77 @@ public class CardRepository {
     }
 
     //   Display Credit Card Type to Users
+    //   Display Credit Card Type to Users
     public void newCreditCard(int userId, String cardName) throws SQLException {
-        var query = "INSERT INTO cards (account_number, credit_limit, apr, refresh_date, card_name, balance, user_id ) VALUES (?, ?,?,?,?,?,?)";
-        try (var con = dbConnection.getConnection();
-             var stmt = con.prepareStatement(query)) {
+        String insertCardSql = "INSERT INTO cards (account_number, credit_limit, apr, refresh_date, card_name, balance, user_id) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String selectCardIdSql = "SELECT id FROM cards WHERE user_id = ? AND account_number = ? ORDER BY id DESC LIMIT 1";
+        String insertUserCardSql = "INSERT INTO users_cards (user_id, card_id) VALUES (?, ?)";
+
+        try (var con = dbConnection.getConnection()) {
+
             Random r = new Random();
             float APR = 0;
             int creditLimit = 0;
-            cardName.toUpperCase(); // Ensures that cardName is consistent
+
+            // normalise to uppercase and decide card type
+            cardName = cardName.toUpperCase();
             if (cardName.equals("GOLD")) {
                 APR = 10.70F;
                 creditLimit = 5000;
             } else if (cardName.equals("PLATINUM")) {
                 APR = 15.10F;
                 creditLimit = 15000;
+            } else if (cardName.equals("BLACK")) {
+                APR = 18.00F;
+                creditLimit = 25000;
             } else {
+                // if something weird comes in, treat it as BLACK or throw – your choice
                 APR = 18.00F;
                 creditLimit = 25000;
             }
+
             int accountNumber = r.nextInt(100000, 999999);
 
-            stmt.setInt(1, accountNumber);
-            stmt.setFloat(2, creditLimit);
-            stmt.setFloat(3, APR);
-            stmt.setString(4, "1");
-            stmt.setString(5, cardName);
-            stmt.setFloat(6, 0);
-            stmt.setInt(7, userId);
-            stmt.executeUpdate();
+            // 1) insert into cards
+            try (var stmt = con.prepareStatement(insertCardSql)) {
+                stmt.setInt(1, accountNumber);
+                stmt.setFloat(2, creditLimit);
+                stmt.setFloat(3, APR);
+                stmt.setString(4, "1");       // keep your existing refresh_date logic
+                stmt.setString(5, cardName);
+                stmt.setFloat(6, 0.0F);       // starting balance
+                stmt.setInt(7, userId);
+                stmt.executeUpdate();
+            }
 
+            // 2) get the id of the card we just inserted
+            int cardId;
+            try (var stmt2 = con.prepareStatement(selectCardIdSql)) {
+                stmt2.setInt(1, userId);
+                stmt2.setInt(2, accountNumber);
+
+                try (var rs = stmt2.executeQuery()) {
+                    if (!rs.next()) {
+                        throw new SQLException("Could not find newly created card for user " + userId);
+                    }
+                    cardId = rs.getInt("id");
+                }
+            }
+
+            // 3) link user and card in users_cards
+            try (var stmt3 = con.prepareStatement(insertUserCardSql)) {
+                stmt3.setInt(1, userId);
+                stmt3.setInt(2, cardId);
+                stmt3.executeUpdate();
+            }
         }
     }
 
+
     // Locating Existing Cards Based off User ID
     public List<Cards> findCardsByUserID(int userId) throws SQLException {
-        var query = "SELECT * FROM Cards WHERE user_id = ?";
+        var query = "SELECT * FROM Cards WHERE user_id = ? AND card_name <> 'VIRTUAL_DEBIT'";
         try (var con = dbConnection.getConnection();
              var stmt = con.prepareStatement(query)) {
             stmt.setInt(1, userId);
@@ -112,6 +148,21 @@ public class CardRepository {
         }
     }
 
+    private boolean isVirtualCard(int cardId) throws SQLException {
+        var query = "SELECT card_name FROM cards WHERE id = ?";
+        try (var con = dbConnection.getConnection();
+             var stmt = con.prepareStatement(query)) {
+            stmt.setInt(1, cardId);
+            try (var rs = stmt.executeQuery()) {
+                if (!rs.next()) {
+                    return false;
+                }
+                var cardName = rs.getString("card_name");
+                return "VIRTUAL_DEBIT".equalsIgnoreCase(cardName);
+            }
+        }
+    }
+
     public Float viewAPR(int id) throws SQLException {
         var query = "SELECT apr FROM cards WHERE id = ?";
         try (var con = dbConnection.getConnection();
@@ -128,6 +179,11 @@ public class CardRepository {
     }
 
     public void applyAPR(int id) throws SQLException {
+
+        // 🔒 Skip APR for virtual debit cards
+        if (isVirtualCard(id)) {
+            return;
+        }
 
         float balance = viewCardBalance(id); //balance
         float apr = viewAPR(id); //apr

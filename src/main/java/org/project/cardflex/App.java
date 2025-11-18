@@ -71,10 +71,16 @@ public class App {
 
             float totalBalance = userRepository.findTotalBalance(id);
 
-            List<Cards> ownedCards = userRepository.getAllCardsByUserId(id);
+            List<Cards> ownedCards = userRepository.getAllCardsByUserId(id)
+                    .stream()
+                    // hide virtual debit/system cards from the UI
+                    .filter(c -> !"VIRTUAL_DEBIT".equalsIgnoreCase(c.getCardName()))
+                    .toList();
 
             // Set of owned CardTypes for filtering available
-            Set<String> ownedType = ownedCards.stream().map(Cards::getCardName).collect(Collectors.toSet());
+            Set<String> ownedType = ownedCards.stream()
+                    .map(Cards::getCardName)
+                    .collect(Collectors.toSet());
 
             // Cards that are available to the User to apply for
             List<Map<String, String>> availableCards = creditCards.stream().

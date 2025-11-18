@@ -42,15 +42,20 @@ public class UserRepository {
 
     //returns a list of all cardids relating to a user EB
     public List<Cards> getAllCardsByUserId(int user_id) throws SQLException {
-
-        var query = "SELECT users_cards.card_id, cards.* " +
-                "FROM users_cards INNER JOIN cards ON cards.user_id = users_cards.user_id " +
-                "WHERE users_cards.user_id = ?";
+        String query = """
+                SELECT c.*
+                FROM users_cards uc
+                INNER JOIN cards c ON c.id = uc.card_id
+                WHERE uc.user_id = ?
+                  AND c.card_name <> 'VIRTUAL_DEBIT'
+                ORDER BY c.id
+                """;
 
         try (var con = dbConnection.getConnection();
              var stmt = con.prepareStatement(query)) {
 
             stmt.setInt(1, user_id);
+
             List<Cards> cards = new ArrayList<>();
 
             try (var rs = stmt.executeQuery()) {
@@ -65,16 +70,25 @@ public class UserRepository {
                     var refreshDate = rs.getInt("refresh_date");
                     var apr = rs.getFloat("apr");
 
-                    cards.add(new Cards(cardId, userId, accountNumber, creditLimit, apr, startDate, refreshDate, cardName, cardBalance ));
+                    cards.add(new Cards(
+                            cardId,
+                            userId,
+                            accountNumber,
+                            creditLimit,
+                            apr,
+                            startDate,
+                            refreshDate,
+                            cardName,
+                            cardBalance
+                    ));
                 }
             }
+
             return cards;
         }
-
     }
 
-
-    //Method will find the users total balance sourced from Users table
+            //Method will find the users total balance sourced from Users table
     public float findTotalBalance(int userId) throws SQLException {
         var query = "SELECT total_balance from users where id = ?";
 

@@ -40,8 +40,10 @@
 
         <div class="transactions-section">
             <p class="transaction-header">Your Transactions</p>
-            <ul>
-                <div class="transaction-keys">
+
+            <div class="transactions-table">
+                <!-- Header row -->
+                <div class="transactions-row transactions-header">
                     <p>S. Acc. number</p>
                     <p>S. name</p>
                     <p>R. Acc. number</p>
@@ -49,17 +51,19 @@
                     <p>Amount</p>
                     <p>Date</p>
                 </div>
-                <li class="transaction" th:each="transaction : ${transactions}">
+
+                <!-- Data rows -->
+                <div class="transactions-row" th:each="transaction : ${transactions}">
                     <p th:text="${transaction.sendersAccNum}"></p>
                     <p th:text="${transaction.sendersUsername}"></p>
                     <p th:text="${transaction.recipientAccNum}"></p>
                     <p th:text="${transaction.recipientUsername}"></p>
-                    <p th:text="${transaction.amount}"></p>
+                    <p class="amount-cell" th:text="${transaction.amount}"></p>
                     <p th:text="${transaction.transactionDate}"></p>
-
-                </li>
-            </ul>
+                </div>
+            </div>
         </div>
+
     </section>
 
 </main>
@@ -176,4 +180,71 @@
         height: 100%;
         text-decoration: none;
     }
+    .transactions-section {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    min-width: 700px;
+    width: 100%;
+    margin-top: 24px;
+}
+
+.transaction-header {
+    font-size: 24px;
+    font-weight: 600;
+    align-self: center;
+    margin-bottom: 16px;
+}
+
+.transactions-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+/* Shared layout for header + rows */
+.transactions-row {
+    display: grid;
+    grid-template-columns: 1.3fr 1.5fr 1.3fr 1.5fr 1fr 1.4fr;
+    gap: 8px;
+    padding: 8px 12px;
+    align-items: center;
+}
+
+/* Header styling */
+.transactions-header {
+    font-weight: 600;
+    border-bottom: 2px solid #0b2574;
+    background-color: #b7cff9;
+}
+
+/* Data row styling */
+.transactions-row:not(.transactions-header) {
+    border-bottom: 1px solid #9cb7e4;
+}
+
+.transactions-row:nth-child(odd):not(.transactions-header) {
+    background-color: #d7e6fb;
+}
+
+.transactions-row:nth-child(even):not(.transactions-header) {
+    background-color: #edf3ff;
+}
+
+/* Amounts right-aligned for easier scanning */
+
+.amount-cell {
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+    border-left: 1px solid #a7bde4;   /* subtle separator */
+    border-right: 1px solid #a7bde4;   /* subtle separator */
+}
+
+
+/* Slightly fixed-width feel for account numbers */
+.transactions-row p:nth-child(1),
+.transactions-row p:nth-child(3) {
+    font-variant-numeric: tabular-nums;
+}
+
 </style>
